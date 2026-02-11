@@ -20,5 +20,10 @@ return [
     'enable_esd_printer'     => 'Enable ESD Printer',
     'enable_whatsapp_link'   => 'Enable WhatsApp Link',
     'enable_pos_counters'    => 'Enable POS Counters',
-    'enable_live_mode'       => 'Enable Live Mode'
+    'enable_live_mode'       => 'Enable Live Mode',
+
+    'shipping_charges'       => 'Shipping Charges',
+
+    'commission_percentage'  => 'Commission Percentage',
+    'commission_amount'      => 'Commission Amount'
 ];

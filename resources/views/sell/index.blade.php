@@ -75,11 +75,12 @@
                             <th>@lang('sale.payment_status')</th>
                             <th>@lang('lang_v1.payment_method')</th>
                             <th>@lang('sale.total_amount')</th>
+                            <th>@lang('custom.shipping_charges')</th>
                             <th>@lang('sale.total_paid')</th>
                             <th>@lang('lang_v1.sell_due')</th>
                             <th>@lang('lang_v1.sell_return_due')</th>
-                            <th>@lang('lang_v1.shipping_status')</th>
                             <th>@lang('lang_v1.total_items')</th>
+                            <th>@lang('lang_v1.shipping_status')</th>
                             <th>@lang('lang_v1.types_of_service')</th>
                             <th>{{ $custom_labels['types_of_service']['custom_field_1'] ?? __('lang_v1.service_custom_field_1') }}
                             </th>
@@ -102,12 +103,13 @@
                             <td class="footer_payment_status_count"></td>
                             <td class="payment_method_count"></td>
                             <td class="footer_sale_total"></td>
+                            <td class="footer_shipping_charges"></td>
                             <td class="footer_total_paid"></td>
                             <td class="footer_total_remaining"></td>
                             <td class="footer_total_sell_return_due"></td>
-                            <td colspan="2"></td>
+                            <td class="footer_total_items"></td>
                             <td class="service_type_count"></td>
-                            <td colspan="7"></td>
+                            <td colspan="12"></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -248,6 +250,10 @@
                     {
                         data: 'final_total',
                         name: 'final_total'
+                    }, 
+                    {
+                        data: 'shipping_charges',
+                        name: 'shipping_charges'
                     },
                     {
                         data: 'total_paid',
@@ -264,13 +270,13 @@
                         "searchable": false
                     },
                     {
-                        data: 'shipping_status',
-                        name: 'shipping_status'
-                    },
-                    {
                         data: 'total_items',
                         name: 'total_items',
                         "searchable": false
+                    },
+                    {
+                        data: 'shipping_status',
+                        name: 'shipping_status'
                     },
                     {
                         data: 'types_of_service_name',
@@ -348,12 +354,18 @@
                 "fnDrawCallback": function(oSettings) {
                     __currency_convert_recursively($('#sell_table'));
                 },
+                
                 "footerCallback": function(row, data, start, end, display) {
+                    let footer_shipping_charges = 0;
                     var footer_sale_total = 0;
                     var footer_total_paid = 0;
                     var footer_total_remaining = 0;
                     var footer_total_sell_return_due = 0;
+                    var footer_total_items = 0;
+
                     for (var r in data) {
+                        footer_shipping_charges += ($(data[r].shipping_charges).data('orig-value')) ?
+                            parseFloat($(data[r].shipping_charges).data('orig-value')) : 0;
                         footer_sale_total += $(data[r].final_total).data('orig-value') ? parseFloat($(
                             data[r].final_total).data('orig-value')) : 0;
                         footer_total_paid += $(data[r].total_paid).data('orig-value') ? parseFloat($(
@@ -363,12 +375,17 @@
                         footer_total_sell_return_due += $(data[r].return_due).find('.sell_return_due')
                             .data('orig-value') ? parseFloat($(data[r].return_due).find(
                                 '.sell_return_due').data('orig-value')) : 0;
+                        footer_total_items += (data[r].total_items) ? parseFloat(data[r].total_items) :
+                            0; // $(data[r].total_items).data('orig-value') ? parseFloat($(data[r].total_items).data('orig-value')) : 0;
                     }
 
+                    $('.footer_total_items').html(footer_total_items);
                     $('.footer_total_sell_return_due').html(__currency_trans_from_en(
                         footer_total_sell_return_due));
                     $('.footer_total_remaining').html(__currency_trans_from_en(footer_total_remaining));
                     $('.footer_total_paid').html(__currency_trans_from_en(footer_total_paid));
+                    $('.footer_shipping_charges').html(__currency_trans_from_en(
+                        footer_shipping_charges));
                     $('.footer_sale_total').html(__currency_trans_from_en(footer_sale_total));
 
                     $('.footer_payment_status_count').html(__count_status(data, 'payment_status'));

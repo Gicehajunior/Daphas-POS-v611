@@ -612,6 +612,20 @@ $(document).ready(function() {
                 { data: 'conatct_name', name: 'conatct_name' },
                 { data: 'business_location', name: 'bl.name' },
                 { data: 'payment_status', name: 'payment_status' },
+                {
+                    data: 'cmmsn_percent',
+                    name: 'cmmsn_percent',
+                    render: function (data, type, row) {
+                        return data ?? `${0}%`;
+                    }
+                },
+                {
+                    data: 'commission_amount',
+                    name: 'commission_amount',
+                    render: function (data, type, row) {
+                        return data ?? 0;
+                    }
+                },
                 { data: 'final_total', name: 'final_total' },
                 { data: 'total_paid', name: 'total_paid' },
                 { data: 'total_remaining', name: 'total_remaining' },
@@ -623,6 +637,10 @@ $(document).ready(function() {
                 },
             ],
             fnDrawCallback: function(oSettings) {
+                $('#footer_commission_amount').text(
+                    sum_table_col($('#sr_sales_with_commission_table'), 'commission-amount')
+                );
+
                 $('#footer_sale_total').text(
                     sum_table_col($('#sr_sales_with_commission_table'), 'final-total')
                 );

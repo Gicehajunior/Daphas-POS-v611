@@ -1325,6 +1325,7 @@ class ReportController extends Controller
 
         $business_id = $request->session()->get('user.business_id');
 
+
         //Return the details in ajax call
         if ($request->ajax()) {
             $start_date = $request->get('start_date');
@@ -1340,27 +1341,95 @@ class ReportController extends Controller
 
             $commission_percentage = User::find($commission_agent)->cmmsn_percent;
 
-            if ($commsn_calculation_type == 'payment_received') {
-                $payment_details = $this->transactionUtil->getTotalPaymentWithCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+            $transactions = Transaction::where('transactions.business_id', $business_id);
 
-                //Get Commision
-                $total_commission = $commission_percentage * $payment_details['total_payment_with_commission'] / 100;
-
-                return ['total_payment_with_commission' => $payment_details['total_payment_with_commission'] ?? 0,
-                    'total_commission' => $total_commission,
-                    'commission_percentage' => $commission_percentage,
-                ];
+            if (!empty($start_date) && !empty($end_date)) {
+                $transactions->whereBetween(DB::raw('date(transactions.transaction_date)'), [$start_date, $end_date]);
             }
 
-            $sell_details = $this->transactionUtil->getTotalSellCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+            //Filter by the location
+            if (!empty($location_id)) {
+                $transactions->where('transactions.location_id', $location_id);
+            }
 
-            //Get Commision
-            $total_commission = $commission_percentage * $sell_details['total_sales_with_commission'] / 100;
+            if (!empty($commission_agent)) {
+                $transactions->where('transactions.commission_agent', $commission_agent);
+            }
 
-            return ['total_sales_with_commission' => $sell_details['total_sales_with_commission'],
-                'total_commission' => $total_commission,
-                'commission_percentage' => $commission_percentage,
-            ];
+            $transactions = $transactions->get();
+
+            /**
+             * commission calculation is in two ways
+             * 
+             * with whole amount value set in the system, to be denoted as 1
+             * with percentage value set in the system, to be denoted as 2
+             * 
+             * @author Re-authored by: gicehajunior-gicehajunior76@gmail.com
+             */
+            $total_commission_in_amount_format = 0;
+            foreach ($transactions as $transactionKey => $transactionValue) {
+                $total_commission_in_amount_format += $transactionValue['commission_amount'];
+            }
+
+            $commission_calculation = 1;
+
+            if ($commission_calculation == 2) {
+                if ($commsn_calculation_type == 'payment_received') {
+                    $payment_details = $this->transactionUtil->getTotalPaymentWithCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                    //Get Commision
+                    $total_commission = $commission_percentage * $payment_details['total_payment_with_commission'] / 100;
+
+                    return [
+                        'total_payment_with_commission' => $payment_details['total_payment_with_commission'] ?? 0,
+                        'total_commission' => $total_commission,
+                        'commission_percentage' => $commission_percentage,
+                        'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                        'commission_calculation' => $commission_calculation
+                    ];
+                }
+
+                $sell_details = $this->transactionUtil->getTotalSellCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                //Get Commision
+                $total_commission = $commission_percentage * $sell_details['total_sales_with_commission'] / 100;
+
+                return [
+                    'total_sales_with_commission' => $sell_details['total_sales_with_commission'],
+                    'total_commission' => $total_commission,
+                    'commission_percentage' => $commission_percentage,
+                    'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                    'commission_calculation' => $commission_calculation
+                ];
+            } else if ($commission_calculation == 1) {
+                if ($commsn_calculation_type == 'payment_received') {
+                    $payment_details = $this->transactionUtil->getTotalPaymentWithCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                    //Get Commision
+                    $total_commission = $payment_details['total_payment_with_commission'] - $total_commission_in_amount_format;
+
+                    return [
+                        'total_payment_with_commission' => $payment_details['total_payment_with_commission'] ?? 0,
+                        'total_commission' => $total_commission,
+                        'commission_percentage' => $commission_percentage,
+                        'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                        'commission_calculation' => $commission_calculation
+                    ];
+                }
+
+                $sell_details = $this->transactionUtil->getTotalSellCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                //Get Commision
+                $total_commission = $sell_details['total_sales_with_commission'] - $total_commission_in_amount_format;
+
+                return [
+                    'total_sales_with_commission' => $sell_details['total_sales_with_commission'],
+                    'total_commission' => $total_commission,
+                    'commission_percentage' => $commission_percentage,
+                    'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                    'commission_calculation' => $commission_calculation
+                ];
+            }
         }
     }
 
