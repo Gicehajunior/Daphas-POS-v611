@@ -28,6 +28,10 @@ class POS extends Master {
         // Any applicable constructor logic can go here
     }
 
+    initializePos() {
+        this.initEditCustomer();
+    }
+
     /**
      * New POS print / invoice handler
      * Handles printing via ESD_DEVICE or fallback bridge methods.
@@ -89,4 +93,145 @@ class POS extends Master {
             printInvoice();
         }
     }
+    
+    initEditCustomer() {
+        const $buttons = $('.edit_customer');
+        const $customer = $('#customer_id');
+    
+        if (!$customer.length) return; 
+
+        // Disable buttons initially
+        $buttons.prop('disabled', true);
+    
+        // Remove previous bindings to prevent duplication
+        $customer.off('change select2:select');
+    
+        // Enable when customer changes (covers both normal change + Select2 selection)
+        $customer.on('change select2:select', function () { 
+            const value = $(this).val();
+            
+            // Disable if:
+            // - empty
+            // - null
+            // - equals 96 (your restricted customer)
+            if (!value || Number(value) === 96) {
+                $buttons.prop('disabled', true);
+                return;
+            }
+
+            // Otherwise enable
+            $buttons.prop('disabled', false);
+        });
+    
+        // Prevent duplicate click handlers
+        $buttons.off('click').on('click', (e) => {
+            const btn = e.currentTarget;
+            const customerId = $('#customer_id').val();
+        
+            if (!customerId) return;
+            this.assistiveModalActionParser(btn, `/contacts/${customerId}/edit`, [
+                {callback: this.editCustomer}
+            ]);
+        });
+    }
+
+    /**
+     * Handles customer edit form submission via AJAX.
+     *
+     * - Attaches click listeners to `.edit-contact-submit-btn`
+     * - Prevents default form submission
+     * - Resolves the closest parent form dynamically
+     * - Submits form data using Fetch API (supports Laravel method spoofing)
+     * - Expects JSON response with `status: success|error`
+     * - Displays toast notifications based on server response
+     * - Automatically resets form and closes modal on success
+     * - Ensures button state (disabled/loading) is safely restored via `finally`
+     *
+     * Dependencies:
+     * cloneNodeElement, disableElement, enableElement,
+     * toggleButtonContent, resolveClosestForm,
+     * formRouteParser, resetFormAndCloseModal,
+     * toast, route
+     */
+    editCustomer() {
+        const btns = document.querySelectorAll('.edit-contact-submit-btn');
+    
+        btns.forEach(btn => {
+            if (!btn) return;
+    
+            btn = cloneNodeElement(btn);
+    
+            btn.addEventListener('click', async (event) => {
+                event.preventDefault();
+    
+                disableElement(btn);
+                toggleButtonContent(btn);
+    
+                let form = resolveClosestForm(btn);
+    
+                if (!form) {
+                    toast('error', 3000, lang.generic_error);
+                    enableElement(btn);
+                    toggleButtonContent(btn, '', true);
+                    return;
+                }
+
+                const token = $('meta[name="csrf-token"]').attr('content') || '';
+    
+                let data = new FormData(form); 
+                let action = formRouteParser(form);
+    
+                try {
+                    const res = await fetch(action, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest', 
+                            'X-CSRF-TOKEN': token
+                        },
+                        body: jsonifyFormData(data)
+                    });
+    
+                    let response;
+    
+                    try {
+                        response = await res.json();
+                    } catch (e) {
+                        throw new Error(lang.invalid_json_exception);
+                    }
+    
+                    if (response && response?.success === true) {
+                        resetFormAndCloseModal(form);
+                        toast('success', 5000, response.msg || lang.undefined_error);
+                        return;
+                    }
+    
+                    if (response && response?.success === false) {
+                        toast('error', 5000, response.msg || lang.undefined_error);
+                        return;
+                    }
+    
+                    toast('error', 5000, lang.undefined_error);
+    
+                } catch (error) {
+                    console.error(error.message || error);
+
+                    toast(
+                        'error',
+                        5000,
+                        error.message || 'Server error, Please try again or contact the administrator!'
+                    );
+    
+                } finally {
+                    enableElement(btn);
+                    toggleButtonContent(btn, '', true);
+                }
+            });
+        });
+    }    
 }
+
+document.addEventListener('DOMContentLoaded', event => {
+    const posIntance = new POS();
+    posIntance.initializePos(); 
+});

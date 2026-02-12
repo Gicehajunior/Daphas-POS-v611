@@ -76,6 +76,7 @@
     <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
         @include('contact.create', ['quick_add' => true])
     </div>
+    
     @if (empty($pos_settings['hide_product_suggestion']) && isMobile())
         @include('sale_pos.partials.mobile_product_suggestions')
     @endif

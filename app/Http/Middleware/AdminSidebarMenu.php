@@ -446,6 +446,30 @@ class AdminSidebarMenu
                 )->order(35);
             }
 
+            // Stock Issuance dropdown
+            if (auth()->user()->can('stock_issuance.view') && auth()->user()->can('stock_issuance.create') && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create'))) {
+                $menu->dropdown(
+                    __('custom.stock_issuances'),
+                    function ($sub) {
+                        if (auth()->user()->can('purchase.view')) {
+                            $sub->url(
+                                action([\App\Http\Controllers\Custom\StockIssuanceCustomController::class, 'index']),
+                                __('custom.list_stock_issuances'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'stock-issuance' && request()->segment(2) == null]
+                            );
+                        }
+                        if (auth()->user()->can('purchase.create')) {
+                            $sub->url(
+                                action([\App\Http\Controllers\Custom\StockIssuanceCustomController::class, 'create']),
+                                __('custom.add_stock_issuances'),
+                                ['icon' => '', 'active' => request()->segment(1) == 'stock-issuance' && request()->segment(2) == 'create']
+                            );
+                        }
+                    },
+                    ['icon' => 'fa fas fa-truck']
+                )->order(35);
+            }
+
             //stock adjustment dropdown
             if (in_array('stock_adjustment', $enabled_modules) && (auth()->user()->can('stock_adjustment.view') || auth()->user()->can('stock_adjustment.create') || auth()->user()->can('view_own_stock_adjustment'))) {
                 $menu->dropdown(

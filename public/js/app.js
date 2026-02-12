@@ -522,16 +522,7 @@ $(document).ready(function() {
     });
 
     //On display of add contact modal
-    $('.contact_modal').on('shown.bs.modal', function(e) {
-        $('input[type=radio][name="contact_type_radio"]').on('change', function() {
-            if (this.value == 'individual') {
-                $('div.individual').show();
-                $('div.business').hide();
-            } else if (this.value == 'business') {
-                $('div.individual').hide();
-                $('div.business').show();
-            }
-        });
+    $('.contact_modal').on('shown.bs.modal', function(e) { 
         if ($('#is_customer_export').is(':checked')) {
             $('div.export_div').show();
         }

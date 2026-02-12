@@ -17,7 +17,14 @@
 				{!! Form::select('contact_id', 
 					[], null, ['class' => 'form-control mousetrap', 'id' => 'customer_id', 'placeholder' => 'Enter Customer name / phone', 'required', 'style' => 'width: 100%;']); !!}
 				<span class="input-group-btn">
-					<button type="button" class="btn btn-default bg-white btn-flat add_new_customer" data-name=""  @if(!auth()->user()->can('customer.create')) disabled @endif><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+					<button type="button" class="btn btn-default bg-white btn-flat add_new_customer" data-name=""  @if(!auth()->user()->can('customer.create')) disabled @endif>
+						<i class="fa fa-plus-circle text-primary fa-lg"></i>
+					</button>
+				</span>
+				<span class="input-group-btn">
+					<button disabled type="button" class="btn btn-default bg-white btn-flat edit_customer" target-modal=".edit-customer-modal" data-name=""  @if(!auth()->user()->can('customer.create')) disabled @endif>
+						<i class="fas fa-pencil-alt text-primary fa-lg"></i>
+					</button>
 				</span>
 			</div>
 			<small class="text-danger @if(empty($customer_due)) hide @endif contact_due_text"><strong>@lang('account.customer_due'):</strong> <span>{{$customer_due ?? ''}}</span></small>

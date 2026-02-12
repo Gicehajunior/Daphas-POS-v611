@@ -25,5 +25,29 @@ return [
     'shipping_charges'       => 'Shipping Charges',
 
     'commission_percentage'  => 'Commission Percentage',
-    'commission_amount'      => 'Commission Amount'
+    'commission_amount'      => 'Commission Amount',
+
+    // Business
+    'business_location'         => 'Business Location',
+    'location'                  => 'Business Location',
+    'department_from'           => 'From Department',
+    'department_to'             => 'To Department',
+
+    // contacts
+    'contact_category'       => 'Contact Category',
+    'individual_category'    => 'Individual',
+    'business_category'      => 'Business',
+    
+    // stock issuances
+    'stock_issuance'            => 'Stock Issuance',
+    'stock_issuances'           => 'Stock Issuances',
+    'all_stock_issuances'       => 'All Stock Issuances',
+    'add_stock_issuances'       => 'Add Stock Issuances',
+    'list_stock_issuances'      => 'List Stock Issuances', 
+
+
+    // Messages
+    // Contact
+    'null_contact_type'      => 'Contact type cannot be empty. Please try checking it & try again.',
+
 ];

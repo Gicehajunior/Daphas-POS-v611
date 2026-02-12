@@ -152,8 +152,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/contacts/check-tax-number', [ContactController::class, 'checkTaxNumber']);
 
     Route::get('/contacts/customers', [ContactController::class, 'getCustomers']);
-    Route::resource('contacts', ContactController::class);
-
+    Route::resource('contacts', ContactController::class); 
+    
     Route::get('taxonomies-ajax-index-page', [TaxonomyController::class, 'getTaxonomyIndexPage']);
     Route::resource('taxonomies', TaxonomyController::class);
 

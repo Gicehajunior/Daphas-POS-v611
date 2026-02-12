@@ -119,8 +119,7 @@ class Master {
             `<div class="loading-message text-center">
                 <div class="spinner-border text-danger mb-2" role="status">
                     <span class="visually-hidden">Loading...</span>
-                </div>
-                <div>Loading...</div>
+                </div> 
             </div>`,
             overlay
         );
@@ -159,19 +158,18 @@ class Master {
      * optionally runs one or more callbacks after the action is completed.
      *
      * @param {Element} btn - The btn/action btn triggered from a DataTable element/or anywhere in the document (e.g. button element).
-     * @param {string} action - The URL or route to fetch or post data to (usually tied to the modal's content).
-     * @param {string} [method=null] - HTTP method to use when performing the action (e.g., 'GET', 'POST').
+     * @param {string} action - The URL or route to fetch or post data to (usually tied to the modal's content). 
      * @param {Function[]|null} [callbackFuncs=null] - Optional array of callback functions to run after action completes.
      * @param {string} [attribute='.target-modal'] - Selector for the modal element to show (default: '.target-modal').
      * @param {Object} [stepperOptions={}] - Stepper Options to append to the stepper global class...
      */
-    assistiveModalActionParser(btn, action, method=null, callbackFuncs = null, attribute='target-modal', stepperOptions={}) {
+    assistiveModalActionParser(btn, action, callbackFuncs = null, attribute='target-modal', stepperOptions={}) {
         this.showOverlay();
         setTimeout(() => {
             $.ajax({
-                type: `${method || 'GET'}`,
+                type: 'GET',
                 url: `${action}`,
-                dataType: 'json', 
+                dataType: 'text', 
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
@@ -184,13 +182,8 @@ class Master {
                     if (!response) {
                         toast('error', 5000, lang.undefined_error);
                         return;
-                    }
+                    } 
                     
-                    if (response.status && response.status == 'error') {
-                        toast(response.status, 5000, response.message);
-                        return;
-                    }
-    
                     let target_modal = btn.getAttribute(attribute);
 
                     if (!target_modal?.length) {
@@ -198,15 +191,14 @@ class Master {
                         return;
                     }
     
-                    let modal = document.querySelector(`${target_modal}`);
-                    
-                    if (!modal || !response?.modal) {
+                    let modal = document.querySelector(`${target_modal}`); 
+                    if (!modal) {
                         toast('error', 5000, lang.undefined_error);
                         return;
                     }
-
-                    __append_html(response?.modal, modal);
-                    __show_modal(target_modal);
+                    
+                    __append_html(response, modal); 
+                    __show_modal(`${target_modal}`);
                     
                     setTimeout(() => {  
                         __searchSelectInitializer();
@@ -229,7 +221,7 @@ class Master {
                     }
                     
                     // Remove every modal child to return the initial state of the 
-                    // modal div container...
+                    // modal div container... 
                     modal.addEventListener('hide.bs.modal', () => {  
                         Array.from(modal.children).forEach(child => { 
                             child.remove(); 

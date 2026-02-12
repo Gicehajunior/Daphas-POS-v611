@@ -58,7 +58,6 @@
 <section class="invoice print_section" id="receipt_section">
 </section> 
 
-
 @stop
 
 @section('javascript')

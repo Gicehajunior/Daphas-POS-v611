@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use App\Rules\ReCaptcha;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class BusinessCustomController extends Controller
 {
