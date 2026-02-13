@@ -45,6 +45,13 @@ return [
     'add_stock_issuances'       => 'Add Stock Issuances',
     'list_stock_issuances'      => 'List Stock Issuances', 
 
+    // roles
+    'role.stock_issuance'       => 'Stock Issuance',
+    'stock_issuance.view'       => 'View Stock Issuance',
+    'stock_issuance.create'     => 'Create Stock Issuance',
+    'stock_issuance.update'     => 'Update Stock Issuance',
+    'stock_issuance.delete'     => 'Delete Stock Issuance',
+
 
     // Messages
     // Contact
