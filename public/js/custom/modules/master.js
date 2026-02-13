@@ -22,8 +22,7 @@ class Master {
         this.multiSetupUploadSection();
         this.setupBasicGlobalFeatures();
         this.quickInitializeDuePayment();
-        this.bulkImportResource();
-        this.confirmPayment();
+        this.bulkImportResource(); 
     }
 
     // Utility method to get CSRF token (if using CSRF protection)
@@ -833,57 +832,5 @@ class Master {
                 });
             }); 
         });
-    }
- 
-    confirmPaymentFunc(clickedId, action, status, swalaction) {
-        Swal
-        .fire(settings.Payments.swal.confirmSwal)
-        .then(result => {
-            if (result.isConfirmed) {
-                fetch(`${action}?id=${clickedId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: new URLSearchParams({
-                        status: status
-                    })
-                })
-                .then(res => res.json())
-                .then(response => {
-                    if (response.status) {
-                        toast(response.status, 5000, response.message);
-    
-                        if (response.status === 'success') {
-                            if (typeof Payments !== 'undefined') {
-                                (new Payments()).getPaymentsResourceData();
-                            }
-    
-                            if (typeof MPESA !== 'undefined') {
-                                (new MPESA()).getMpesaTransactions();
-                            }
-                            
-                            const modal = document.querySelector('.viewSinglePaymentModal');
-                            closeModal(modal);
-                        }
-                    }
-                })
-                .catch((error) => {
-                    toast('error', 5000, error?.message || lang.server_error);
-                });
-            }
-        });
-    }         
-
-    confirmPayment() {
-        const btns = document.querySelectorAll('.confirm-payment-btn');
-        btns.forEach(btn => {
-            btn = cloneNodeElement(btn);
-            btn.addEventListener('click', (event) => {
-                const clickedId = btn.dataset.id;
-                this.confirmPaymentFunc(clickedId, '/payments/confirm', 1);
-            });
-        });
-    }
+    } 
 } 

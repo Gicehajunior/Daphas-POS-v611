@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "941d919a0c5c378e67c00251b2d969ad",
+    "content-hash": "469a1ca0d84ada29ee6c387a88a36a22",
     "packages": [
         {
             "name": "aloha/twilio",
@@ -4193,6 +4193,53 @@
                 }
             ],
             "time": "2022-12-15T11:24:39+00:00"
+        },
+        {
+            "name": "mpesapaypap/mpesapaypap",
+            "version": "v2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Gicehajunior/mpesapaypap.git",
+                "reference": "1b8fdbb730e999a0dc29a6fb6ae9a8bcb0ca0bc1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Gicehajunior/mpesapaypap/zipball/1b8fdbb730e999a0dc29a6fb6ae9a8bcb0ca0bc1",
+                "reference": "1b8fdbb730e999a0dc29a6fb6ae9a8bcb0ca0bc1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "MpesaPay.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giceha Junior",
+                    "email": "gicehajunior76@daphascomp.com",
+                    "homepage": "https://simplepay.daphascomp.com"
+                }
+            ],
+            "description": "A simple mpesa daraja api helper in PHP",
+            "homepage": "https://github.com/Gicehajunior/mpesapaypap/tree/main",
+            "keywords": [
+                "daraja-api",
+                "mpesa",
+                "mpesa-payment"
+            ],
+            "support": {
+                "issues": "https://github.com/Gicehajunior/mpesapaypap/issues",
+                "source": "https://github.com/Gicehajunior/mpesapaypap/tree/v2.1.1"
+            },
+            "time": "2025-03-12T11:47:46+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -13692,6 +13739,6 @@
     "platform": {
         "php": "^8.0"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

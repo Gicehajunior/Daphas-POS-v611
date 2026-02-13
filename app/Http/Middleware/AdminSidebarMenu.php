@@ -832,7 +832,7 @@ class AdminSidebarMenu
                 auth()->user()->can('access_package_subscriptions')) {
                 $menu->dropdown(
                     __('business.settings'),
-                    function ($sub) use ($enabled_modules) {
+                    function ($sub) use ($menu, $enabled_modules) {
                         if (auth()->user()->can('business_settings.access')) {
                             $sub->url(
                                 action([\App\Http\Controllers\BusinessController::class, 'getBusinessSettings']),
@@ -845,6 +845,8 @@ class AdminSidebarMenu
                                 ['icon' => '', 'active' => request()->segment(1) == 'business-location']
                             );
                         }
+                        
+
                         if (auth()->user()->can('invoice_settings.access')) {
                             $sub->url(
                                 action([\App\Http\Controllers\InvoiceSchemeController::class, 'index']),
@@ -852,6 +854,7 @@ class AdminSidebarMenu
                                 ['icon' => '', 'active' => in_array(request()->segment(1), ['invoice-schemes', 'invoice-layouts'])]
                             );
                         }
+
                         if (auth()->user()->can('barcode_settings.access')) {
                             $sub->url(
                                 action([\App\Http\Controllers\BarcodeController::class, 'index']),
@@ -898,6 +901,48 @@ class AdminSidebarMenu
                                 ['icon' => '', 'active' => request()->segment(1) == 'types-of-service']
                             );
                         }
+
+                        // Gateway Settings (Nested Dropdown)
+                        $has_gateway_access =
+                            auth()->user()->can('mpesa_settings.view') ||
+                            auth()->user()->can('mpesa_settings.create') ||
+                            auth()->user()->can('email_settings.view') ||
+                            auth()->user()->can('email_settings.create') ||
+                            auth()->user()->can('stripe_settings.view') ||
+                            auth()->user()->can('stripe_settings.create');
+
+                        if ($has_gateway_access) {
+                            // Header for visual grouping
+                            $sub->header('<strong>' . __('Gateway Settings') . '<hr></strong>');
+
+                            // Mpesa
+                            if (auth()->user()->can('mpesa_settings.view') || auth()->user()->can('mpesa_settings.create')) {
+                                $sub->url(
+                                    action([\App\Http\Controllers\Custom\MpesaCustomController::class, 'index']),
+                                    __('Mpesa Settings'),
+                                    ['icon' => '']
+                                );
+                            }
+
+                            // Email
+                            if (auth()->user()->can('email_settings.view') || auth()->user()->can('email_settings.create')) {
+                                $sub->url(
+                                    action([\App\Http\Controllers\Custom\EmailCustomController::class, 'index']),
+                                    __('Email Settings'),
+                                    ['icon' => '']
+                                );
+                            }
+
+                            // Stripe
+                            if (auth()->user()->can('stripe_settings.view') || auth()->user()->can('stripe_settings.create')) {
+                                $sub->url(
+                                    action([\App\Http\Controllers\Custom\StripeCustomController::class, 'index']),
+                                    __('Stripe Settings'),
+                                    ['icon' => '']
+                                );
+                            }
+                        }
+                                            
                     },
                     ['icon' => '<svg aria-hidden="true" class="tw-size-5 tw-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
