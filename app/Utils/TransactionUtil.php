@@ -75,6 +75,17 @@ class TransactionUtil extends Util
             'discount_amount' => $uf_data ? $this->num_uf($input['discount_amount']) : $input['discount_amount'],
             'tax_amount' => $invoice_total['tax'],
             'final_total' => $final_total,
+                        
+            // Added by Giceha Junior: https://github.com/Gicehajunior
+            'invoice_token' => !empty($input['invoice_token']) ? $input['invoice_token'] : null,
+            'tax_amount' => !empty($input['tax_amount']) ? $input['tax_amount'] : 0,
+            'tims_TSIN' => !empty($input['tims_TSIN']) ? $input['tims_TSIN'] : null,
+            'tims_CUIN' => !empty($input['tims_CUIN']) ? $input['tims_CUIN'] : null,
+            'tims_CUSN' => !empty($input['tims_CUSN']) ? $input['tims_CUSN'] : null,
+            'tims_QRCode' => !empty($input['tims_QRCode']) ? $input['tims_QRCode'] : null,
+            'tims_DtStmp' => !empty($input['tims_DtStmp']) ? $input['tims_DtStmp'] : null,
+            // /Added by Giceha Junior: https://github.com/Gicehajunior
+
             'additional_notes' => ! empty($input['sale_note']) ? $input['sale_note'] : null,
             'staff_note' => ! empty($input['staff_note']) ? $input['staff_note'] : null,
             'created_by' => $user_id,
@@ -1454,7 +1465,7 @@ class TransactionUtil extends Util
         $output['tax_label'] .= ':';
         $output['tax'] = ($transaction->tax_amount != 0) ? $this->num_f($transaction->tax_amount, $show_currency, $business_details) : 0;
 
-        if ($transaction->tax_amount != 0 && $tax->is_tax_group) {
+        if ($transaction->tax_amount != 0 && !empty($tax) && $tax->is_tax_group) {
             $transaction_group_tax_details = $this->groupTaxDetails($tax, $transaction->tax_amount);
 
             $output['group_tax_details'] = [];
@@ -1593,6 +1604,12 @@ class TransactionUtil extends Util
         if (! empty($transaction->additional_expense_value_4) && ! empty($transaction->additional_expense_key_4)) {
             $output['additional_expenses'][$transaction->additional_expense_key_4] = $this->num_f($transaction->additional_expense_value_4, $show_currency, $business_details);
         }
+
+        // check for quantity viewability
+        $output['show_quantity'] = $il->show_quantity; 
+
+        // check for unit viewability
+        $output['show_unit'] = $il->show_unit;
 
         //Check for barcode
         $output['barcode'] = ($il->show_barcode == 1) ? $transaction->invoice_no : false;

@@ -62,9 +62,9 @@ class BusinessCustomController extends Controller
     }
 
     public function downloadESDAClassApiBridgerScriptLibrary() {
-        $file = public_path('api-lib/aclas_api.php');
+        $file = public_path('api-lib/esd_api_bridger.php');
 
-        return response()->download($file, "Aclas-API-ESD-Bridger.php");
+        return response()->download($file, "esd_api_bridger.php");
     }
 
 

@@ -32,6 +32,8 @@ return [
     'location'                  => 'Business Location',
     'department_from'           => 'From Department',
     'department_to'             => 'To Department',
+    'pos_pin'                   => 'POS Pin',
+    'pos_pin_placeholder'       => 'Enter pin to unlock POS',
 
     // contacts
     'contact_category'       => 'Contact Category',
@@ -52,6 +54,14 @@ return [
     'stock_issuance.update'     => 'Update Stock Issuance',
     'stock_issuance.delete'     => 'Delete Stock Issuance',
 
+    // Invoice Layout
+    'show_quantity'             => 'Show Quantity',
+    'show_unit'                 => 'Show Unit',
+
+    // Manage user 
+    'an_employee'               => 'An Employee',
+    'is_service_staff'          => 'Service Staff',
+    'is_service_staff_tooltip'  => 'Check/Uncheck to make a user a service staff.',
 
     // Messages
     // Contact

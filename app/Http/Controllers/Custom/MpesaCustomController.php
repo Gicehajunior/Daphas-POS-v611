@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Custom;
 
 use App\MpesaSetting;
-use App\Utils\Custom\MpesaUtil;
+use App\Utils\Custom\CustomMpesaUtil;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
@@ -18,10 +18,10 @@ class MpesaCustomController extends Controller
     /**
      * Constructor
      *
-     * @param  MpesaUtil  $mpesaUtil
+     * @param  CustomMpesaUtil  $mpesaUtil
      * @return void
      */
-    public function __construct(MpesaUtil $mpesaUtil)
+    public function __construct(CustomMpesaUtil $mpesaUtil)
     {
         $this->mpesaUtil = $mpesaUtil;
     }

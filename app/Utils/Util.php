@@ -20,9 +20,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str; // Add this at the top with other imports
+use App\Utils\Custom\CustomUtil;
 
-class Util
+class Util extends CustomUtil
 {
+    
     /**
      * This function unformats a number and returns them in plain eng format
      *
@@ -655,6 +657,7 @@ class Util
         return md5(rand(1, 10).microtime());
     }
 
+
     /**
      * Generates invoice url for the transaction
      *
@@ -672,10 +675,10 @@ class Util
         }
 
         if ($transaction->is_quotation == 1) {
-            return route('show_quote', ['token' => $transaction->invoice_token]);
+            return !empty($transaction->tims_QRCode) ? $transaction->tims_QRCode : route('show_quote', ['token' => $transaction->invoice_token]);
         }
 
-        return route('show_invoice', ['token' => $transaction->invoice_token]);
+        return !empty($transaction->tims_QRCode) ? $transaction->tims_QRCode : route('show_invoice', ['token' => $transaction->invoice_token]);
     }
 
     /**
@@ -689,15 +692,10 @@ class Util
         $transaction = Transaction::where('business_id', $business_id)
             ->findOrFail($transaction_id);
 
-        if (empty($transaction->invoice_token)) {
-            $transaction->invoice_token = $this->generateToken();
-            $transaction->save();
-        }
-
         if ($transaction->payment_status != 'paid' && $transaction->status == 'final') {
-            return route('invoice_payment', ['token' => $transaction->invoice_token]);
+            return !empty($transaction->tims_QRCode) ? $transaction->tims_QRCode : route('invoice_payment', ['token' => $transaction->invoice_token]);
         } else {
-            return '';
+            return !empty($transaction->tims_QRCode) ? $transaction->tims_QRCode : route('invoice_payment', ['token' => $transaction->invoice_token]);
         }
     }
 
@@ -884,6 +882,14 @@ class Util
                 $invoice_url = $this->getInvoiceUrl($transaction->id, $transaction->business_id);
                 $data[$key] = str_replace('{invoice_url}', $invoice_url, $data[$key]);
             }
+
+            //Replace cuin_number
+            // Added by Giceha Junior: https://github.com/Gicehajunior
+            if (!empty($transaction) && strpos($value, '{cuin_number}') !== false && $transaction->type == 'sell') {
+                $cuin_number = $transaction->tims_CUIN;
+                $data[$key] = str_replace('{cuin_number}', $cuin_number, $data[$key]);
+            }
+            // /Added by Giceha Junior: https://github.com/Gicehajunior
 
             if (! empty($transaction) && strpos($value, '{quote_url}') !== false && $transaction->type == 'sell') {
                 $invoice_url = $this->getInvoiceUrl($transaction->id, $transaction->business_id);
@@ -1256,16 +1262,24 @@ class Util
 
     public function shipping_statuses()
     {
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+        
+        $pos_settings = empty($business->pos_settings) 
+            ?   $this->businessUtil->defaultPosSettings() 
+            :   json_decode($business->pos_settings, true);
+
         $statuses = [
-            'ordered' => __('lang_v1.ordered'),
-            'packed' => __('lang_v1.packed'),
-            'shipped' => __('lang_v1.shipped'),
-            'delivered' => __('lang_v1.delivered'),
-            'cancelled' => __('restaurant.cancelled'),
+            'ordered' => !empty($pos_settings['ordered']) ? $pos_settings['ordered'] : __('lang_v1.ordered'),
+            'packed' => !empty($pos_settings['packed']) ? $pos_settings['packed'] : __('lang_v1.packed'),
+            'shipped' => !empty($pos_settings['shipped']) ? $pos_settings['shipped'] : __('lang_v1.shipped'),
+            'delivered' => !empty($pos_settings['delivered']) ? $pos_settings['delivered'] : __('lang_v1.delivered'),
+            'cancelled' => !empty($pos_settings['cancelled']) ? $pos_settings['cancelled'] : __('restaurant.cancelled')
         ];
 
         return $statuses;
     }
+
 
     /**
      * Retrieves sum of due amount of a contact

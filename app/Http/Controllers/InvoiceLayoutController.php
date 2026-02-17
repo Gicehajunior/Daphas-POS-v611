@@ -73,7 +73,7 @@ class InvoiceLayoutController extends Controller
 
             //Set value for checkboxes
             $checkboxes = ['show_business_name', 'show_location_name', 'show_landmark', 'show_city', 'show_state', 'show_country', 'show_zip_code', 'show_mobile_number', 'show_alternate_number', 'show_email', 'show_tax_1', 'show_tax_2', 'show_logo', 'show_barcode', 'show_payments', 'show_customer', 'show_client_id',
-                'show_brand', 'show_sku', 'show_cat_code', 'show_sale_description', 'show_sales_person', 'show_expiry',
+                'show_brand', 'show_sku', 'show_quantity', 'show_cat_code', 'show_sale_description', 'show_sales_person', 'show_expiry',
                 'show_lot', 'show_previous_bal', 'show_previous_balance_due', 'show_image', 'show_reward_point', 'show_qr_code',
                 'show_commission_agent', 'show_letter_head', ];
             foreach ($checkboxes as $name) {

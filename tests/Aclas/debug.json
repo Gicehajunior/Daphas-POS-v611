@@ -1,0 +1,32 @@
+{
+    "saleType": "sales",
+    "cuin": "",
+    "till": "001",
+    "rctNo": "2026-1003",
+    "total": 1,
+    "Paid": 1,
+    "Payment": "cash",
+    "CustomerPIN": "P6966666665Y",
+    "VAT_A_Net": 0.86,
+    "VAT_A": 0.14,
+    "VAT_B_Net": 0,
+    "VAT_B": 0,
+    "VAT_C_Net": 0,
+    "VAT_C": 0,
+    "VAT_D_Net": 0,
+    "VAT_D": 0,
+    "VAT_E_Net": 0,
+    "VAT_E": 0,
+    "VAT_F_Net": 0,
+    "VAT_F": 0,
+    "data": [
+        {
+            "productCode": "3300",
+            "productDesc": "single",
+            "quantity": "1.00",
+            "unitPrice": 1,
+            "discount": 0,
+            "taxtype": 16
+        }
+    ]
+}

@@ -9,6 +9,8 @@ use DB;
 
 class CashRegisterUtil extends Util
 {
+    use Custom\CustomCashRegisterUtil;
+    
     /**
      * Returns number of opened Cash Registers for the
      * current logged in user
