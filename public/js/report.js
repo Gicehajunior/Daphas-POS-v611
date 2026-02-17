@@ -819,7 +819,8 @@ $(document).ready(function() {
             { data: 'supplier', name: 'c.name' },
             { data: 'ref_no', name: 't.ref_no' },
             { data: 'transaction_date', name: 't.transaction_date' },
-            { data: 'purchase_qty', name: 'purchase_lines.quantity' },
+            { data: 'purchase_qty', name: 'purchase_lines.quantity' }, 
+            { data: 'purchase_unit', name: 'purchase_unit'},
             { data: 'quantity_adjusted', name: 'purchase_lines.quantity_adjusted' },
             { data: 'unit_purchase_price', name: 'purchase_lines.purchase_price_inc_tax' },
             { data: 'subtotal', name: 'subtotal', searchable: false },
@@ -828,8 +829,11 @@ $(document).ready(function() {
             $('#footer_subtotal').text(
                 sum_table_col($('#product_purchase_report_table'), 'row_subtotal')
             );
-            $('#footer_total_purchase').html(
+            $('#footer_total_qty_purchase').html(
                 __sum_stock($('#product_purchase_report_table'), 'purchase_qty')
+            );
+            $('#footer_total_unit_purchase').html(
+                __sum_stock_qty_count_func($('#product_purchase_report_table'), 'purchase_unit')
             );
             $('#footer_total_adjusted').html(
                 __sum_stock($('#product_purchase_report_table'), 'quantity_adjusted')
@@ -964,7 +968,7 @@ $(document).ready(function() {
                 $('#footer_subtotal').text(
                     sum_table_col($('#product_sell_report_table'), 'row_subtotal')
                 );
-                $('#footer_total_sold').html(__sum_stock($('#product_sell_report_table'), 'sell_qty'));
+                $('#footer_total_sold').html(__sum_stock_qty_count_func($('#product_sell_report_table'), 'sell_qty')); 
                 $('#footer_tax').html(__sum_stock($('#product_sell_report_table'), 'tax', 'left'));
                 __currency_convert_recursively($('#product_sell_report_table'));
             },
@@ -1020,6 +1024,9 @@ $(document).ready(function() {
             { data: 'purchase_quantity', name: 'tspl.quantity' },
         ],
         fnDrawCallback: function(oSettings) {
+            $('#footer_total_unit_purchased').html(
+                __sum_stock_qty_count_func($('#product_sell_report_with_purchase_table'), 'purchase_qty')
+            );
             __currency_convert_recursively($('#product_sell_report_with_purchase_table'));
         },
     });
@@ -1070,8 +1077,9 @@ $(document).ready(function() {
             $('#footer_grouped_subtotal').text(
                 sum_table_col($('#product_sell_grouped_report_table'), 'row_subtotal')
             );
+
             $('#footer_total_grouped_sold').html(
-                __sum_stock($('#product_sell_grouped_report_table'), 'sell_qty')
+                __sum_stock_qty_count_func($('#product_sell_grouped_report_table'), 'total_qty_sold')
             );
             __currency_convert_recursively($('#product_sell_grouped_report_table'));
         },

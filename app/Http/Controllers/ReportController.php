@@ -2028,13 +2028,13 @@ class ReportController extends Controller
                     return '<span class="unit_sale_price" data-orig-value="'.$row->unit_sale_price.'">'.
                     $this->transactionUtil->num_f($row->unit_sale_price, true).'</span>';
                 })
+                
                 ->editColumn('sell_qty', function ($row) {
                     //ignore child sell line of combo product
                     $class = is_null($row->parent_sell_line_id) ? 'sell_qty' : '';
 
-                    return '<span class="'.$class.'"  data-orig-value="'.$row->sell_qty.'" 
-                    data-unit="'.$row->unit.'" >'.
-                    $this->transactionUtil->num_f($row->sell_qty, false, null, true).'</span> '.$row->unit;
+                    // return '<span class="'.$class.'"  data-orig-value="'.$row->sell_qty.'" data-unit="'.$row->unit.'" >'. $this->transactionUtil->num_f($row->sell_qty, false, null, true).'</span> '.$row->unit;
+                    return '<span class="quantity sell_qty" data-quantity="' . $row->sell_qty . '" data-currency_symbol="false" data-orig-value="' . $row->sell_qty . '">' . (float) $row->sell_qty . '</span>';
                 })
                  ->editColumn('subtotal', function ($row) {
                      //ignore child sell line of combo product
@@ -2218,9 +2218,10 @@ class ReportController extends Controller
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('unit_sale_price', function ($row) {
                     return '<span class="display_currency" data-currency_symbol = true>'.$row->unit_sale_price.'</span>';
-                })
+                }) 
                 ->editColumn('purchase_quantity', function ($row) {
-                    return '<span data-is_quantity="true" class="display_currency purchase_quantity" data-currency_symbol=false data-orig-value="'.(float) $row->purchase_quantity.'" data-unit="'.$row->unit.'" >'.(float) $row->purchase_quantity.'</span> '.$row->unit;
+                    // return '<span data-is_quantity="true" class="display_currency purchase_quantity" data-currency_symbol=false data-orig-value="'.(float) $row->purchase_quantity.'" data-unit="'.$row->unit.'" >'.(float) $row->purchase_quantity.'</span> '.$row->unit;
+                    return '<span class="quantity purchase_qty" data-quantity="' . (float) $row->purchase_quantity . '" data-currency_symbol="false" data-orig-value="' . (float) $row->purchase_quantity . '">' . (float) $row->purchase_quantity . '</span>';
                 })
                 ->editColumn('ref_no', '
                     @if($purchase_type == "opening_stock")
@@ -2851,7 +2852,8 @@ class ReportController extends Controller
                 })
                 ->editColumn('transaction_date', '{{@format_date($formated_date)}}')
                 ->editColumn('total_qty_sold', function ($row) {
-                    return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="'.$row->unit.'" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    // return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="'.$row->unit.'" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    return '<span class="quantity total_qty_sold" data-quantity="' . $row->total_qty_sold . '" data-currency_symbol="false" data-orig-value="' . (float) $row->total_qty_sold . '">' . (float) $row->total_qty_sold . '</span>';
                 })
                 ->editColumn('current_stock', function ($row) {
                     if ($row->enable_stock) {
@@ -2967,7 +2969,8 @@ class ReportController extends Controller
                 ->editColumn('category_name', '{{$category_name ?? __("lang_v1.uncategorized")}}')
                 ->editColumn('brand_name', '{{$brand_name ?? __("lang_v1.no_brand")}}')
                 ->editColumn('total_qty_sold', function ($row) {
-                    return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    // return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    return '<span class="total_qty_sold quantity" data-quantity="' . (float) $row->total_qty_sold . '" data-currency_symbol="false" data-orig-value="' . (float) $row->total_qty_sold . '">' . (float) $row->total_qty_sold . '</span>';
                 })
                 ->editColumn('current_stock', function ($row) {
                     return '<span data-is_quantity="true" class="display_currency current_stock" data-currency_symbol=false data-orig-value="'.(float) $row->current_stock.'" data-unit="">'.(float) $row->current_stock.'</span> ';

@@ -170,6 +170,12 @@
                                         <th>@lang('sale.qty')</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr class="bg-gray font-17 footer-total text-center"> 
+                                        <td colspan="10"></td>
+                                        <td id="footer_total_unit_purchased"></td> 
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -214,6 +220,7 @@
 @endsection
 
 @section('javascript')
+    <script src="{{ asset('js/custom/functions/reports.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/report.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(
@@ -268,8 +275,9 @@
                                     $('#footer_psr_by_cat_total_sell').text(
                                         sum_table_col($('#product_sell_report_by_category'), 'row_subtotal')
                                     );
+                                    
                                     $('#footer_psr_by_cat_total_sold').html(
-                                        __sum_stock($('#product_sell_report_by_category'), 'sell_qty')
+                                        __sum_stock_qty_count_func($('#product_sell_report_by_category'), 'total_qty_sold')
                                     );
 
                                     $('#footer_psr_by_cat_total_stock').html(
@@ -325,8 +333,9 @@
                                     $('#footer_psr_by_brand_total_sell').text(
                                         sum_table_col($('#product_sell_report_by_brand'), 'row_subtotal')
                                     );
+
                                     $('#footer_psr_by_brand_total_sold').html(
-                                        __sum_stock($('#product_sell_report_by_brand'), 'sell_qty')
+                                        __sum_stock_qty_count_func($('#product_sell_report_by_brand'), 'total_qty_sold')
                                     );
 
                                     $('#footer_psr_by_cat_total_stock').html(
