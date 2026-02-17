@@ -1222,7 +1222,7 @@ class SellPosController extends Controller
 
             $output = [
                 'success' => 0,
-                'msg' => 'File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage()
+                'msg' => $msg
             ];
         }
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\Custom\BusinessCustomController;
 use App\Http\Controllers\Custom\MpesaCustomController; 
 use App\Http\Controllers\Custom\EmailCustomController; 
 use App\Http\Controllers\Custom\StripeCustomController; 
+use App\Http\Controllers\Custom\SellPosCustomController;
 use App\Http\Controllers\SellPosController;
 
 
@@ -38,6 +39,10 @@ Route::get('mpesa-settings/_destroy/{id}', [MpesaCustomController::class, '_dest
 Route::post('mpesa-settings/destroy/{id}', [MpesaCustomController::class, 'destroy']);
 Route::post('/business/settings/daraja_api/register_mpesa_endpoints', [BusinessCustomController::class, 'register_mpesa_endpoints']); 
 Route::get('/business/settings/daraja_api/mpesa_transactions_preview', [BusinessCustomController::class, 'mpesa_transactions_preview']);
+
+// POS
+Route::post('/pos/auth/checkPinIfEnabled', [SellPosCustomController::class, 'checkPinIfEnabled']);
+Route::post('/pos/auth/pin', [SellPosCustomController::class, 'posPinAuthentication']);
 
 // Download Resource
 Route::get('/download/', [BusinessCustomController::class, 'downloadESDAClassApiBridgerScriptLibrary']);

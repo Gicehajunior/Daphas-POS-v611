@@ -83,7 +83,7 @@
     <!-- /.content -->
     <div class="modal fade register_details_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
     </div>
-    
+
     <div class="modal fade close_register_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
     </div>
 
@@ -102,7 +102,12 @@
     @include('sale_pos.partials.recent_transactions_modal')
 
     @include('sale_pos.partials.weighing_scale_modal')
-
+	<div class="pos-pin-form">
+		<div class="form-group"> 
+			<input type="hidden" name="default_pos_lock_after_duration" id="default_pos_lock_after_duration" class="form-control default_pos_lock_after_duration" placeholder="" value="<?= isset($pos_settings['pos_lock_after_duration']) ? $pos_settings['pos_lock_after_duration'] : 1 ?>" aria-describedby="helpId"> 
+		</div>
+		@include('sale_pos.partials.other_partials.pos_pin_form')
+	</div>
 @stop
 @section('css')
     <!-- include module css -->
@@ -114,8 +119,10 @@
         @endforeach
     @endif
 @stop
+
+
 @section('javascript')
-    <script src="{{ asset('js/custom/modules/pos.js?v=' . $asset_v) }}">
+    <script src="{{ asset('js/custom/modules/pos.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>   
     <script src="{{ asset('js/printer.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
@@ -128,6 +135,7 @@
             in_array('service_staff', $enabled_modules))
         <script src="{{ asset('js/restaurant.js?v=' . $asset_v) }}"></script>
     @endif
+
     <!-- include module js -->
     @if (!empty($pos_module_data))
         @foreach ($pos_module_data as $key => $value)

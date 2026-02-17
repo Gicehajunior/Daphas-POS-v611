@@ -91,7 +91,12 @@
 @include('sale_pos.partials.recent_transactions_modal')
 
 @include('sale_pos.partials.weighing_scale_modal')
-
+<div class="pos-pin-form">
+	<div class="form-group"> 
+		<input type="hidden" name="default_pos_lock_after_duration" id="default_pos_lock_after_duration" class="form-control default_pos_lock_after_duration" placeholder="" value="<?= isset($pos_settings['pos_lock_after_duration']) ? $pos_settings['pos_lock_after_duration'] : 1 ?>" aria-describedby="helpId"> 
+	</div>
+	@include('sale_pos.partials.other_partials.pos_pin_form')
+</div>
 @stop
 
 @section('javascript')
