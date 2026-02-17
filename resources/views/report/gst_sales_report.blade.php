@@ -104,6 +104,7 @@
             });
             gst_sales_report = $('table#gst_sales_report').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 aaSorting: [[3, 'desc']],
                 scrollY: "75vh",

@@ -204,8 +204,9 @@ class StockIssuance {
         if (document.body.contains(_stock_issuance_table)) {
             var stock_issuance_table = undefined; 
             stock_issuance_table = $('#stock_issuance_table').DataTable({ 
-                pageLength: 25,
+                        pageLength: 10,
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 aaSorting: [[0, 'desc']],
                 ajax: '/stock-issuances',

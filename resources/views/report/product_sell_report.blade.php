@@ -235,6 +235,7 @@
                     if(typeof product_sell_report_by_category_datatable == 'undefined') {
                         product_sell_report_by_category_datatable = $('table#product_sell_report_by_category').DataTable({
                                 processing: true,
+                        pageLength: 10,
                                 serverSide: true,
                                 fixedHeader:false,
                                 ajax: {
@@ -293,6 +294,7 @@
                     if(typeof product_sell_report_by_brand_datatable == 'undefined') {
                         product_sell_report_by_brand_datatable = $('table#product_sell_report_by_brand').DataTable({
                                 processing: true,
+                        pageLength: 10,
                                 serverSide: true,
                                 fixedHeader:false,
                                 ajax: {

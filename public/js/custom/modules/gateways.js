@@ -107,7 +107,7 @@ class Gateway extends Master {
         if (this.transactions.length > mpesa_recent_transaction_payments_TableRowCount || 
                 mpesa_recent_transaction_payments_TableRowCount == 0) {
             $('.mpesa_recent_transaction_payments').DataTable({ 
-                pageLength: 25, 
+                        pageLength: 10, 
                 destroy: true,
                 data: this.transactions,
                 "order": [[ 7, 'desc' ]],
@@ -159,8 +159,9 @@ class Gateway extends Master {
         if (document.body.contains(mpesa_settings_table)) {  
             if ($('.mpesa_settings_table').length > 0) { 
                 const _mpesa_settings_table = $('.mpesa_settings_table').DataTable({ 
-                    pageLength: 25,
+                            pageLength: 10,
                     processing: true,
+                        pageLength: 10,
                     serverSide: true,
                     aaSorting: [[14, 'desc']],
                     autoWidth: false,

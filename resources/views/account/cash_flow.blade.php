@@ -107,6 +107,7 @@
         // Cash Flow Table
         cash_flow_table = $('#cash_flow_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             "ajax": {

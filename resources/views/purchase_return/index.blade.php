@@ -87,6 +87,7 @@
             //Purchase table
             purchase_return_table = $('#purchase_return_datatable').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 aaSorting: [

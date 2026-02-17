@@ -134,6 +134,7 @@
         // Account Book
         account_book = $('#account_book').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             ajax: {

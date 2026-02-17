@@ -55,6 +55,7 @@
     $(document).ready( function(){
         var roles_table = $('#roles_table').DataTable({
                     processing: true,
+                        pageLength: 10,
                     serverSide: true,
                     fixedHeader:false,
                     ajax: '/roles',

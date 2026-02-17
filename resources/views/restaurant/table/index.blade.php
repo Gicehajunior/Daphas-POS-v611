@@ -120,6 +120,7 @@
             //Brands table
             var tables_table = $('#tables_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 ajax: '/modules/tables',

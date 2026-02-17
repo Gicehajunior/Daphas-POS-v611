@@ -97,6 +97,7 @@
             //Purchase table
             purchase_requisition_table = $('#purchase_requisition_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 aaSorting: [
                     [1, 'desc']

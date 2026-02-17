@@ -84,6 +84,7 @@ $(document).ready(function() {
     //Brands table
     var brands_table = $('#brands_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/brands',
@@ -162,6 +163,7 @@ $(document).ready(function() {
     //Tax Rates table
     var tax_rates_table = $('#tax_rates_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/tax-rates',
@@ -268,6 +270,7 @@ $(document).ready(function() {
     //Unit table
     var units_table = $('#unit_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/units',
@@ -440,6 +443,7 @@ $(document).ready(function() {
     
     contact_table = $('#contact_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         scrollY:        "75vh",
@@ -740,6 +744,7 @@ $(document).ready(function() {
     //Variations table
     var variation_table = $('#variation_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/variation-templates',
@@ -998,6 +1003,7 @@ $(document).ready(function() {
     //Tax Rates table
     var tax_groups_table = $('#tax_groups_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/group-taxes',
@@ -1143,6 +1149,7 @@ $(document).ready(function() {
     });
     var invoice_table = $('#invoice_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         bPaginate: false,
         fixedHeader:false,
@@ -1290,6 +1297,7 @@ $(document).ready(function() {
     //Business locations CRUD
     business_locations = $('#business_location_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         bPaginate: false,
         fixedHeader:false,
@@ -1403,6 +1411,7 @@ $(document).ready(function() {
     //Expense category table
     var expense_cat_table = $('#expense_category_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         ajax: '/expense-categories',
         columnDefs: [
@@ -1484,6 +1493,7 @@ $(document).ready(function() {
     //Expense table
     expense_table = $('#expense_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[1, 'desc']],
@@ -1725,6 +1735,7 @@ $(document).ready(function() {
     //Sales commission agent
     var sales_commission_agent_table = $('#sales_commission_agent_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/sales-commission-agents',
@@ -1831,6 +1842,7 @@ $(document).ready(function() {
     //Customer Group table
     var customer_groups_table = $('#customer_groups_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/customer-group',
@@ -1973,6 +1985,7 @@ $(document).ready(function() {
 
     discounts_table = $('#discounts_table').DataTable({
                     processing: true,
+                        pageLength: 10,
                     serverSide: true,
                     fixedHeader:false,
                     ajax: base_path + '/discount',
@@ -2002,6 +2015,7 @@ $(document).ready(function() {
 
     types_of_service_table = $('#types_of_service_table').DataTable({
                         processing: true,
+                        pageLength: 10,
                         serverSide: true,
                         fixedHeader:false,
                         ajax: base_path + '/types-of-service',

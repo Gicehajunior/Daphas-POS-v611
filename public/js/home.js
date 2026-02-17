@@ -30,6 +30,7 @@ $(document).ready(function() {
     //atock alert datatables
     var stock_alert_table = $('#stock_alert_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         ordering: false,
         searching: false,
@@ -57,6 +58,7 @@ $(document).ready(function() {
     //payment dues datatables
     purchase_payment_dues_table = $('#purchase_payment_dues_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         ordering: false,
         searching: false,
@@ -85,6 +87,7 @@ $(document).ready(function() {
     //Sales dues datatables
     sales_payment_dues_table = $('#sales_payment_dues_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         ordering: false,
         searching: false,
@@ -113,6 +116,7 @@ $(document).ready(function() {
     //Stock expiry report table
     stock_expiry_alert_table = $('#stock_expiry_alert_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         searching: false,
         scrollY:        "75vh",
@@ -142,6 +146,7 @@ $(document).ready(function() {
     if ($('#quotation_table').length) {
         quotation_datatable = $('#quotation_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],

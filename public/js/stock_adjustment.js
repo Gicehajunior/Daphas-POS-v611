@@ -106,6 +106,7 @@ $(document).ready(function() {
 
     stock_adjustment_table = $('#stock_adjustment_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: '/stock-adjustments',

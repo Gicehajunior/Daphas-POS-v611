@@ -82,6 +82,7 @@
 
             cg_report_table = $('#cg_report_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {

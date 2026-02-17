@@ -229,6 +229,7 @@
         $(document).ready(function() {
             product_table = $('#product_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 aaSorting: [
@@ -717,6 +718,7 @@
                             [1, 'asc']
                         ],
                         processing: true,
+                        pageLength: 10,
                         serverSide: true,
                         scrollY: "75vh",
                         scrollX: true,

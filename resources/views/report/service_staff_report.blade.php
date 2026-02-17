@@ -95,6 +95,7 @@
 
         service_staff_report = $('table#service_staff_report').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],
@@ -140,6 +141,7 @@
 
         service_staff_line_orders = $('table#service_staff_line_orders').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],

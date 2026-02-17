@@ -32,6 +32,7 @@ $(document).ready(function() {
     //contact report
     supplier_report_tbl = $('#supplier_report_tbl').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: {
@@ -129,6 +130,7 @@ $(document).ready(function() {
     //Stock report table
     stock_report_table = $('#stock_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         fixedHeader:false,
         order: [[1, 'asc']],
         serverSide: true,
@@ -291,6 +293,7 @@ $(document).ready(function() {
     //Register report
     register_report_table = $('#register_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         scrollY:        "75vh",
         scrollX:        true,
@@ -439,6 +442,7 @@ $(document).ready(function() {
             sr_payments_with_commission_report = 
             $('table#sr_payments_with_commission_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 aaSorting: [[1, 'desc']],
@@ -479,6 +483,7 @@ $(document).ready(function() {
         //Sales representative report -> Sales
         sr_sales_report = $('table#sr_sales_report').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],
@@ -538,6 +543,7 @@ $(document).ready(function() {
         //Sales representative report -> Expenses
         sr_expenses_report = $('table#sr_expenses_report').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],
@@ -587,6 +593,7 @@ $(document).ready(function() {
         //Sales representative report -> Sales with commission
         sr_sales_commission_report = $('table#sr_sales_with_commission_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],
@@ -673,6 +680,7 @@ $(document).ready(function() {
     //Stock expiry report table
     stock_expiry_report_table = $('table#stock_expiry_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: {
@@ -789,6 +797,7 @@ $(document).ready(function() {
     });
     product_purchase_report = $('table#product_purchase_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[3, 'desc']],
@@ -912,6 +921,7 @@ $(document).ready(function() {
 
         product_sell_report = $('table#product_sell_report_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[6, 'desc']],
@@ -978,6 +988,7 @@ $(document).ready(function() {
     var is_lot_enabled = $('#lot_enabled').length > 0 ? true : false;
     product_sell_report_with_purchase_table = $('table#product_sell_report_with_purchase_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[4, 'desc']],
@@ -1033,6 +1044,7 @@ $(document).ready(function() {
 
     product_sell_grouped_report = $('table#product_sell_grouped_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[1, 'desc']],
@@ -1133,6 +1145,7 @@ $(document).ready(function() {
     //Product lot Report
     lot_report = $('table#lot_report').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         // aaSorting: [[3, 'desc']],
@@ -1177,6 +1190,7 @@ $(document).ready(function() {
     //Purchase Payment Report
     purchase_payment_report = $('table#purchase_payment_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[2, 'desc']],
@@ -1283,6 +1297,7 @@ $(document).ready(function() {
     //Sell Payment Report
     sell_payment_report = $('table#sell_payment_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[2, 'desc']],
@@ -1416,6 +1431,7 @@ $(document).ready(function() {
     }
     items_report_table = $('#items_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax: {

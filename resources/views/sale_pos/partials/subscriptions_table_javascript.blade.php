@@ -11,6 +11,7 @@ $(document).ready( function(){
     
     subscriptions_table = $('#subscriptions_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[0, 'desc']], 

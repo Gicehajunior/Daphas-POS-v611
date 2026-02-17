@@ -49,6 +49,7 @@
             //Status table
             var warranty_table = $('#warranty_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 ajax: "{{ action([\App\Http\Controllers\WarrantyController::class, 'index']) }}",
