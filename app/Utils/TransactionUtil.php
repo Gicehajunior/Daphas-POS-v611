@@ -5147,7 +5147,14 @@ class TransactionUtil extends Util
                     function ($join) {
                         $join->on('tsl_agg.transaction_id', '=', 'transactions.id');
                     }
-                )
+                ) 
+                ->leftJoin('transaction_sell_lines as tsl', function ($join) {
+                    $join->on('transactions.id', '=', 'tsl.transaction_id')
+                        ->whereNull('tsl.parent_sell_line_id');
+                })
+                ->leftJoin('variations as v', 'tsl.variation_id', '=', 'v.id') // added by Giceha
+                ->leftJoin('products as p', 'v.product_id', '=', 'p.id')  
+                ->leftJoin('units as p_units', 'p.unit_id', '=', 'p_units.id')  
                 ->select(
                     'transactions.id',
                     'transactions.transaction_date',
@@ -5155,6 +5162,9 @@ class TransactionUtil extends Util
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
                     'transactions.invoice_no as invoice_no_text',
+                    'p.name as product_name',  // added by Giceha
+                    'tsl.quantity', // added by Giceha
+                    'p_units.short_name as unit', 
                     'contacts.name',
                     'contacts.mobile',
                     'contacts.contact_id',

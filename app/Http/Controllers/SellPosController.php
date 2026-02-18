@@ -52,6 +52,7 @@ use App\Utils\ModuleUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
+use App\Utils\Custom\CustomMpesaUtil;
 use App\Variation;
 use App\Warranty;
 use Illuminate\Http\Request;
@@ -81,6 +82,8 @@ class SellPosController extends Controller
 
     protected $moduleUtil;
 
+    protected $mpesaUtil;
+
     protected $notificationUtil;
 
     /**
@@ -96,6 +99,7 @@ class SellPosController extends Controller
         TransactionUtil $transactionUtil,
         CashRegisterUtil $cashRegisterUtil,
         ModuleUtil $moduleUtil,
+        CustomMpesaUtil $mpesaUtil,
         NotificationUtil $notificationUtil
     ) {
         $this->contactUtil = $contactUtil;
@@ -104,6 +108,7 @@ class SellPosController extends Controller
         $this->transactionUtil = $transactionUtil;
         $this->cashRegisterUtil = $cashRegisterUtil;
         $this->moduleUtil = $moduleUtil;
+        $this->mpesaUtil = $mpesaUtil;
         $this->notificationUtil = $notificationUtil;
 
         $this->dummyPaymentLine = [
@@ -1222,7 +1227,7 @@ class SellPosController extends Controller
 
             $output = [
                 'success' => 0,
-                'msg' => $msg
+                'msg' => $e->getMessage()
             ];
         }
 

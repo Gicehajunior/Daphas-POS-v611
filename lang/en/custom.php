@@ -35,6 +35,10 @@ return [
     'pos_pin'                   => 'POS Pin',
     'pos_pin_placeholder'       => 'Enter pin to unlock POS',
 
+    // Products
+    'quantity'                  => 'Quantity',
+    'units'                     => 'Units',
+
     // contacts
     'contact_category'       => 'Contact Category',
     'individual_category'    => 'Individual',
@@ -62,6 +66,9 @@ return [
     'an_employee'               => 'An Employee',
     'is_service_staff'          => 'Service Staff',
     'is_service_staff_tooltip'  => 'Check/Uncheck to make a user a service staff.',
+
+    // Reports
+    'custom_orders_report_1'    => 'Orders(Custom Report A)',
 
     // Messages
     // Contact

@@ -45,6 +45,10 @@
                     </li>
 
                     <li>
+                        <a href="#custom_orders_report_1" data-toggle="tab" aria-expanded="true">@lang('custom.custom_orders_report_1')</a>
+                    </li>
+
+                    <li>
                         <a href="#ss_line_orders_tab" data-toggle="tab" aria-expanded="true">@lang('lang_v1.line_orders')</a>
                     </li>
                 </ul>
@@ -52,6 +56,10 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="ss_orders_tab">
                         @include('report.partials.service_staff_orders_table')
+                    </div>
+
+                    <div class="tab-pane" id="custom_orders_report_1">
+                        @include('report.partials.service_staff_custom_orders_report_1')
                     </div>
 
                     <div class="tab-pane" id="ss_line_orders_tab">
@@ -67,7 +75,8 @@
 @endsection
 
 @section('javascript')
-    
+    <script src="{{ asset('js/custom/functions/reports.js?v=' . $asset_v) }}"></script>
+
     <script type="text/javascript">
         $(document).ready(function(){
             if($('#ssr_date_range').length == 1){
@@ -90,6 +99,13 @@
                     $(this).val('');
                     service_staff_report.ajax.reload();
                     service_staff_line_orders.ajax.reload();
+                });
+
+                $('#ssr_date_range').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                    service_staff_report.ajax.reload();
+                    service_staff_line_orders.ajax.reload();
+                    custom_order_report_1.ajax.reload();
                 });
             }
 
@@ -130,7 +146,7 @@
                     },
                 ],
             "fnDrawCallback": function (oSettings) {
-                $('#footer_cor1_quantity').html(__sum_stock_qty_count_func($('#service_staff_report'), 'quantity')); 
+                $('#footer_quantity').html(__sum_stock_qty_count_func($('#service_staff_report'), 'quantity')); 
                 $('#footer_total_amount').text(sum_table_col($('#service_staff_report'), 'final-total'));
                 $('#footer_subtotal').text(sum_table_col($('#service_staff_report'), 'total_before_tax'));
                 $('#footer_total_tax').text(sum_table_col($('#service_staff_report'), 'total-tax'));
@@ -182,11 +198,43 @@
             }
         });
 
-            
+        custom_order_report_1 = $('table#custom_order_report_1').DataTable({ 
+            pageLength: 25,
+            processing: true,
+            serverSide: true,
+            aaSorting: [[0, 'desc']],
+            ajax: {
+                "url": "/sells",
+                "data": function ( d ) {
+                    var start = $('input#ssr_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    var end = $('input#ssr_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
+
+                    d.location_id = $('select#ssr_location_id').val();
+                    d.start_date = start;
+                    d.end_date = end;
+                    d.service_staff_id = $('select#service_staff_id').val();
+                }
+            }, 
+            columns: [
+                { data: 'transaction_date', name: 'transaction_date'  },
+                { data: 'invoice_no', name: 'invoice_no'},
+                { data: 'waiter', name: 'ss.first_name'}, 
+                { data: 'product_name', name: 'p.name'},
+                { data: 'quantity', name: 'quantity'},
+                { data: 'units', name: 'units'}
+            ],
+            fnDrawCallback: function (oSettings) {
+                $('#ss_cor1_quantity').html(__sum_stock_qty_count_func($('#custom_order_report_1'), 'quantity')); 
+                $('#ss_cor1_unit').html(__sum_stock_unit_func($('#custom_order_report_1'), 'units')); 
+                __currency_convert_recursively($('#custom_order_report_1'));
+            }
+        }); 
+
         //Customer Group report filter
         $('select#ssr_location_id, #ssr_date_range, #service_staff_id').change( function(){
             service_staff_report.ajax.reload();
             service_staff_line_orders.ajax.reload();
+            custom_order_report_1.ajax.reload();
         });
     })
     </script>

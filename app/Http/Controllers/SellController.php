@@ -407,6 +407,18 @@ class SellController extends Controller
                         return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
                     }
                 )
+                ->editColumn(
+                    'quantity',
+                    function ($row) {
+                        return '<span class="quantity" data-quantity="'. (float) $row['quantity'].'" data-currency_symbol="false" data-orig-value="'. (float) $row['quantity'].'">'. (float) $row['quantity'].'</span>';
+                    }
+                )
+                ->editColumn(
+                    'units',
+                    function ($row) {
+                        return '<span class="units" data-quantity="'.$row['quantity'].'" data-unit="'.$row['unit'].'" data-currency_symbol="false" data-orig-value="'.$row['unit'].'">'.$row['unit'].'</span>';
+                    }
+                ) 
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn(
                     'payment_status',
@@ -538,7 +550,7 @@ class SellController extends Controller
                         }
                     }, ]);
 
-            $rawColumns = ['final_total', 'action', 'total_paid', 'shipping_charges', 'commission_amount', 'cmmsn_percent', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'zatca_status'];
+            $rawColumns = ['quantity', 'units', 'final_total', 'action', 'total_paid', 'shipping_charges', 'commission_amount', 'cmmsn_percent', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'zatca_status'];
 
             return $datatable->rawColumns($rawColumns)
                       ->skipTotalRecords()
