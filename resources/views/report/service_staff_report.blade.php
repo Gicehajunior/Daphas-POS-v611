@@ -117,6 +117,7 @@
                 { data: 'invoice_no', name: 'invoice_no'},
                 { data: 'waiter', name: 'ss.first_name'},
                 { data: 'business_location', name: 'bl.name'},
+                { data: 'quantity', name: 'quantity'},
                 { data: 'total_before_tax', name: 'transactions.total_before_tax'},
                 { data: 'discount_amount', name: 'transactions.discount_amount'},
                 { data: 'tax_amount', name: 'transactions.tax_amount'},
@@ -129,12 +130,11 @@
                     },
                 ],
             "fnDrawCallback": function (oSettings) {
+                $('#footer_cor1_quantity').html(__sum_stock_qty_count_func($('#service_staff_report'), 'quantity')); 
                 $('#footer_total_amount').text(sum_table_col($('#service_staff_report'), 'final-total'));
                 $('#footer_subtotal').text(sum_table_col($('#service_staff_report'), 'total_before_tax'));
                 $('#footer_total_tax').text(sum_table_col($('#service_staff_report'), 'total-tax'));
-
                 $('#footer_total_discount').text(sum_table_col($('#service_staff_report'), 'total-discount'));
-                
                 __currency_convert_recursively($('#service_staff_report'));
             }
         });

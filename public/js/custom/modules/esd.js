@@ -63,123 +63,126 @@ class ESD_DEVICE extends Master {
      * 
      * @param {Object} transaction_result - The transaction result returned from POS backend.
      * @returns {void}
-     */
-    async post_transaction(transaction_result) { 
-        if (!transaction_result || !transaction_result.transaction) return;
-
-        // Convert number to 2-decimal string
-        const toDp = (value, toString=false, decimals = 2) => { 
-            if (toString) {
-                return parseFloat((String(value ?? 0).replace(",", ""))).toFixed(decimals);
-            }
-
-            return parseFloat(parseFloat(String(value ?? 0).replace(",", "")).toFixed(decimals));
-        };
+     */  
+    async post_transaction(transaction_result) {
+        if (!transaction_result?.transaction) return;
 
         this.txn = transaction_result.transaction;
-        this.transaction_id = this.txn.id; 
+        this.transaction_id = this.txn.id;
         this.pos_settings = transaction_result.pos_settings;
 
-        // Reset running totals
-        this.VAT_A = 0;
-        this.VAT_A_Net = 0;
-        this.exempted_product_total = 0;
+        const payment_method =
+            Number(this.txn?.is_credit_sale ?? 0) === 0 ? 'cash' : 'credit';
 
-        const payment_method = Number(this.txn?.is_credit_sale ?? 0) === 0 ? 'cash' : 'credit';
         const saleType = this.txn.type || this.txn.sub_type;
-        const _saleType = (saleType === 'sell' || !saleType) ? 'sales' : 'refund';
-        const customer_pin = transaction_result?.customer_details?.business?.tax_number_1 || '';
+        const _saleType =
+            (saleType === 'sell' || !saleType) ? 'sales' : 'refund';
 
-        // Prepare product info & calculate taxes
-        const product_info = [];
+        const customer_pin =
+            transaction_result?.customer_details?.business?.tax_number_1 || '';
+
         const tax_rates = transaction_result.tax_rates || [];
+        const product_info = [];
 
-        Object.values(this.txn.products || {}).forEach(product => {
+        // ---- Work in cents (integer math) ----
+        let totalCents = 0;
+        let vatACents = 0;
+        let vatANetCents = 0;
 
-            const qty = parseFloat(product.quantity ?? 1);
-            const unitPrice = parseFloat((product.unit_price_inc_tax || 0).toString().replace(',', ''));
-            const discount = parseFloat((product.line_discount_amount || 0).toString().replace(',', ''));
+        for (const product of Object.values(this.txn.products || {})) {
+            if (product.tax_exempted == 1 && product.tax_id?.length) {
+                continue; // Skip exempted products
+            } 
 
-            // Exempted products
-            if (product.tax_exempted?.length && product.tax_id?.length) { 
-                this.exempted_product_total += unitPrice * qty;
-                return;
+            const qty = Number(product.quantity ?? 1);
+
+            const unitPrice = Number(
+                String(product.unit_price_inc_tax ?? 0).replace(/,/g, '')
+            );
+
+            const discount = Number(
+                String(product.line_discount_amount ?? 0).replace(/,/g, '')
+            );
+
+            const tax_rate =
+                tax_rates.find(rate =>
+                    Number(rate.id) === Number(product.tax_id)
+                ) || {};
+
+            const rate = Number(tax_rate.amount || 0);
+            const effectiveVAT = this.vatFractionOfTotal(rate);
+
+            // ---- Convert to cents ----
+            const unitPriceCents = Math.round(unitPrice * 100);
+            const discountCents = Math.round(discount * 100);
+
+            const lineGrossCents = unitPriceCents * qty;
+            const lineTotalCents = lineGrossCents - discountCents;
+
+            totalCents += lineTotalCents;
+
+            // ---- VAT calculation based on rounded line total ----
+            if (effectiveVAT > 0) {
+                const lineVatCents =
+                    Math.round((effectiveVAT / 100) * lineTotalCents);
+
+                vatACents += lineVatCents;
+                vatANetCents += (lineTotalCents - lineVatCents);
             }
 
-            const tax_rate = tax_rates.find(rate =>
-                Number(rate.id) === Number(product.tax_id)
-            ) || {};
-
-            const rate = tax_rate.amount || 0;
-            const effectiveVAT = this.vatFractionOfTotal(rate);
-            const hscode = effectiveVAT > 0 ? product.product_id : "2835259626"; 
-
-            const total_product_amount = unitPrice * qty;
-            const VAT_A = (effectiveVAT / 100) * total_product_amount;
-
-            this.VAT_A += VAT_A;
-            this.VAT_A_Net += (total_product_amount - VAT_A);
-
             product_info.push({
-                productCode: hscode,
+                productCode: effectiveVAT > 0
+                    ? product.product_id
+                    : "2835259626",
+
                 productDesc: product.product_type,
-                quantity: toDp(qty, true),
-                unitPrice: toDp(unitPrice),
-                discount: toDp(discount),
+
+                quantity: qty.toFixed(2),
+
+                unitPrice: (unitPriceCents / 100),
+
+                discount: (discountCents / 100),
+
                 taxtype: rate
             });
-        });
+        }
 
-        // Calculate final totals
-        const final_total = parseFloat((this.txn.final_total || 0).toString().replace(',', ''));
-        const shipping = parseFloat((this.txn.shipping_charges || 0).toString().replace(',', ''));
-
-        this.finalTotalWithoutShippingCharges = final_total - shipping - this.exempted_product_total;
-
-        if (this.finalTotalWithoutShippingCharges <= 0) {
+        if (totalCents <= 0) {
             this.txn.final_transaction = 1;
             this.finalizeTransaction(this.txn);
             return;
         }
 
-        // Final rounding
-        this.VAT_A = Math.round(this.VAT_A * 100) / 100;
-        this.VAT_A_Net = Math.round(this.VAT_A_Net * 100) / 100;
-        this.exempted_product_total = Math.round(this.exempted_product_total * 100) / 100;
-
-        this.total_before_tax = this.VAT_A_Net;
-        this.total_tax_amount = this.VAT_A;
+        // ---- Final computed totals (from lines only) ----
+        const total = totalCents / 100;
+        const VAT_A = vatACents / 100;
+        const VAT_A_Net = vatANetCents / 100;
 
         const transaction_data = {
-            saleType: _saleType, 
+            saleType: _saleType,
             cuin: "",
             till: "001",
             rctNo: this.txn.invoice_no,
 
-            total: toDp(this.finalTotalWithoutShippingCharges),
-            Paid: toDp(this.finalTotalWithoutShippingCharges),
+            total: total,
+            Paid: total,
 
             Payment: payment_method,
             CustomerPIN: customer_pin,
 
-            VAT_A_Net: toDp(this.VAT_A_Net),
-            VAT_A: toDp(this.VAT_A),
+            VAT_A_Net: VAT_A_Net,
+            VAT_A: VAT_A,
 
-            VAT_B_Net: toDp(0),
-            VAT_B: toDp(0),
-            VAT_C_Net: toDp(0),
-            VAT_C: toDp(0),
-            VAT_D_Net: toDp(0),
-            VAT_D: toDp(0),
-            VAT_E_Net: toDp(0),
-            VAT_E: toDp(0),
-            VAT_F_Net: toDp(0),
-            VAT_F: toDp(0),
+            VAT_B_Net: 0, VAT_B: 0,
+            VAT_C_Net: 0, VAT_C: 0,
+            VAT_D_Net: 0, VAT_D: 0,
+            VAT_E_Net: 0, VAT_E: 0,
+            VAT_F_Net: 0, VAT_F: 0,
 
             data: product_info
         };
 
-        // Determine API endpoint
+        // ---- Determine endpoint ----
         const url = this.pos_settings.esd_api_bridger_endpoint
             ? `http://${this.pos_settings.esd_api_bridger_endpoint}/esd_api_bridger.php`
             : this.pos_settings.esd_device_endpoint
@@ -187,22 +190,24 @@ class ESD_DEVICE extends Master {
                 : "http://127.0.0.1:9000/api/values/PostTims";
 
         const data = url.includes('esd_api_bridger')
-            ? { 
-                transaction_data, 
+            ? {
+                transaction_data,
                 esd_device_endpoint: this.pos_settings.esd_device_endpoint
                     ? `http://${this.pos_settings.esd_device_endpoint}:9000/api/values/PostTims`
-                    : "http://127.0.0.1:9000/api/values/PostTims" 
+                    : "http://127.0.0.1:9000/api/values/PostTims"
             }
             : transaction_data;
 
-        data['mode'] = this.pos_settings?.enable_live_mode?.length ? 'live' : 'sandbox';
+        data.mode = this.pos_settings?.enable_live_mode
+            ? 'live'
+            : 'sandbox';
 
         const formData = new FormData();
         formData.append('data', JSON.stringify(data));
 
         try {
             const response = await fetch(url, {
-                method: 'POST', 
+                method: 'POST',
                 body: formData
             });
 
@@ -220,7 +225,7 @@ class ESD_DEVICE extends Master {
             console.error('ESD ERROR:', err);
             enable_pos_form_actions();
             toast('error', 4000, 'ESD connection failed');
-        }               
+        }
     }
 
     /**
@@ -236,24 +241,15 @@ class ESD_DEVICE extends Master {
         const message = resp?.obj?.Message;
         this.tims_post_transaction_error = message;
 
-        if (resp.status === 'success') {
-            this.finalizeTransaction(resp); 
-        }
-        else {
+        if (resp.status !== 'success') {
             enable_pos_form_actions();
             toast('error', 8000, message || 'Unexpected error! ESD printer connection error.');
+            return;
         }
-    }
 
-    /**
-     * Updates transaction with ESD response, including CUIN, TSIN, QRCode.
-     * 
-     * @param {Object} resp - Response object from ESD device
-     * @returns {void}
-     */ 
-    finalizeTransaction(resp) {
         const obj = resp?.obj;
         if (!obj || !this.txn) {
+            enable_pos_form_actions();
             toast('error', 8000, 'ESD response invalid or transaction missing.');
             return;
         }
@@ -282,6 +278,17 @@ class ESD_DEVICE extends Master {
             total_before_tax: this.total_before_tax
         });
 
+        this.finalizeTransaction(this.txn);  
+    } 
+
+    /**
+     * Finalizes transaction by sending the record onto the server
+     * 
+     * @param {Object} resp - Response object from the taxing pipeline.
+     * @returns {void}
+     */ 
+    finalizeTransaction(txn) { 
+        this.txn = txn;
         console.log('FINAL TXN TO POS:', this.txn);
         
         fetch('/pos', {
