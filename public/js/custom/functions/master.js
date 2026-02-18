@@ -3613,4 +3613,4 @@ function computeFooterTotalsUtil(api) {
             );
         }
     });
-} 
+}  

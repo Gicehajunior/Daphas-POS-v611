@@ -37,7 +37,7 @@
                                         <i class="fa fa-user-secret"></i>
                                     </span>
                                     {!! Form::select('res_waiter_id', $waiters, $transaction->res_waiter_id, [
-                                        'class' => 'form-control',
+                                        'class' => 'form-control searchSelect',
                                         'required' => $is_service_staff_required,
                                         'placeholder' => __('restaurant.select_service_staff'),
                                     ]) !!}
@@ -100,3 +100,7 @@
             {!! Form::close() !!}
         </div>
     </div>
+
+<script>
+	searchSelectUtilFunction();
+</script>

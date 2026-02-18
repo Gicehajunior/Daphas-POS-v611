@@ -17,7 +17,7 @@
 			<span class="input-group-addon">
 				<i class="fa fa-user-secret"></i>
 			</span>
-			<select class="form-control" name="res_waiter_id" id="res_waiter_id" @if ($is_service_staff_required) 
+			<select class="form-control searchSelect" name="res_waiter_id" id="res_waiter_id" @if ($is_service_staff_required) 
 			required
 			@endif>
 				<option selected value="">{{ __('restaurant.select_service_staff') }}</option>
@@ -34,3 +34,7 @@
 	</div>
 </div>
 @endif
+
+<script>
+	searchSelectUtilFunction();
+</script>
