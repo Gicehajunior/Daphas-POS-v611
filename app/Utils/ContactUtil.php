@@ -200,7 +200,8 @@ class ContactUtil extends Util
                 }
             }
 
-            $output = ['success' => true,
+            $output = [
+                'success' => true,
                 'msg' => __('contact.updated_success'),
                 'data' => $contact,
             ];

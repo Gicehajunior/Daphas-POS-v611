@@ -14,45 +14,80 @@
     {!! Form::open(['url' => action([\App\Http\Controllers\ManageUserController::class, 'update'], [$user->id]), 'method' => 'PUT', 'id' => 'user_edit_form']) !!}
     <div class="row">
         <div class="col-md-12">
-        @component('components.widget', ['class' => 'box-primary'])
+          @component('components.widget', ['class' => 'box-primary'])
             <div class="col-md-2">
                 <div class="form-group">
                   {!! Form::label('surname', __( 'business.prefix' ) . ':') !!}
                     {!! Form::text('surname', $user->surname, ['class' => 'form-control', 'placeholder' => __( 'business.prefix_placeholder' ) ]); !!}
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <div class="form-group">
                   {!! Form::label('first_name', __( 'business.first_name' ) . ':*') !!}
                     {!! Form::text('first_name', $user->first_name, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.first_name' ) ]); !!}
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <div class="form-group">
                   {!! Form::label('last_name', __( 'business.last_name' ) . ':') !!}
                     {!! Form::text('last_name', $user->last_name, ['class' => 'form-control', 'placeholder' => __( 'business.last_name' ) ]); !!}
                 </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="col-md-4">
+            </div> 
+
+            <div class="col-md-3">
                 <div class="form-group">
                   {!! Form::label('email', __( 'business.email' ) . ':*') !!}
                     {!! Form::text('email', $user->email, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.email' ) ]); !!}
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <div class="form-group">
-                  <div class="checkbox">
-                    <br>
-                    <label>
-                         {!! Form::checkbox('is_active', $user->status, $is_checked_checkbox, ['class' => 'input-icheck status']); !!} {{ __('lang_v1.status_for_user') }}
-                    </label>
-                    @show_tooltip(__('lang_v1.tooltip_enable_user_active'))
-                  </div>
-                </div>
-            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                {!! Form::label('pos_pin', __( 'custom.pos_pin' ) . ':*') !!}
+                {!! Form::text('pos_pin', $user->pos_pin, ['class' => 'form-control', 'placeholder' => __( 'custom.pos_pin_placeholder' ) ]); !!}
+                <small>N/B: Should be pin of 5 total digits.</small>
+              </div>
+            </div> 
+              
             <div class="col-md-3">
+              <div class="form-group">
+                <div class="checkbox">
+                  <br>
+                  <label>
+                    {!! Form::checkbox('is_employee', 1, !empty($user->is_employee), [ 'class' => 'input-icheck is_employee', 'id' => 'is_employee']); !!} 
+                    {{ __( 'custom.an_employee' ) }}
+                  </label>
+                  @show_tooltip(__('custom.an_employee_tooltip'))
+                </div>
+              </div>
+            </div> 
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <div class="checkbox">
+                  <br>
+                  <label>
+                    {!! Form::checkbox('is_service_staff', 1, !empty($user->is_service_staff), [ 'class' => 'input-icheck is_service_staff', 'id' => 'is_service_staff']); !!} 
+                    {{ __( 'custom.is_service_staff' ) }}
+                  </label>
+                  @show_tooltip(__('custom.is_service_staff_tooltip'))
+                </div>
+              </div>
+            </div> 
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <div class="checkbox">
+                  <br>
+                  <label>
+                        {!! Form::checkbox('is_active', $user->status, $is_checked_checkbox, ['class' => 'input-icheck status']); !!} {{ __('lang_v1.status_for_user') }}
+                  </label>
+                  @show_tooltip(__('lang_v1.tooltip_enable_user_active'))
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
               <div class="form-group">
                 <div class="checkbox">
                   <br/>
@@ -63,13 +98,14 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-2 service_staff_pin_div {{ $user->is_enable_service_staff_pin == 1 ? '' : 'hide' }}">
+
+            <div class="col-md-4 service_staff_pin_div {{ $user->is_enable_service_staff_pin == 1 ? '' : 'hide' }}">
               <div class="form-group">
                 {!! Form::label('service_staff_pin', __( 'lang_v1.staff_pin' ) . ':') !!}
                   {!! Form::password('service_staff_pin', ['class' => 'form-control','placeholder' => __( 'lang_v1.staff_pin' ) ]); !!}
               </div>
             </div>
-        @endcomponent
+          @endcomponent
         </div>
         <div class="col-md-12">
         @component('components.widget', ['title' => __('lang_v1.roles_and_permissions')])

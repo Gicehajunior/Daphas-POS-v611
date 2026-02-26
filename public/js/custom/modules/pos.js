@@ -25,7 +25,17 @@
 class POS extends Master {
     constructor() {
         super();
-        // Any applicable constructor logic can go here
+        this.default_pos_lock_after_duration = document.querySelector('.default_pos_lock_after_duration');
+        this.pinInput = '';
+        this.inactivityTimer;
+        this.locker_duration = this.default_pos_lock_after_duration?.value;
+        this.pinDisplay = document.getElementById('pinDisplay');
+        this.pinBoxes = document.querySelectorAll('.pin-box'); 
+    }
+
+    initializePos() {
+        this.initEditCustomer();
+        this.initializePosPinSecurity();
     }
 
     /**
@@ -89,4 +99,363 @@ class POS extends Master {
             printInvoice();
         }
     }
+    
+    initEditCustomer() {
+        const $buttons = $('.edit_customer');
+        const $customer = $('#customer_id');
+    
+        if (!$customer.length) return; 
+
+        // Disable buttons initially
+        $buttons.prop('disabled', true);
+    
+        // Remove previous bindings to prevent duplication
+        $customer.off('change select2:select');
+    
+        // Enable when customer changes (covers both normal change + Select2 selection)
+        $customer.on('change select2:select', function () { 
+            const value = $(this).val();
+            
+            // Disable if:
+            // - empty
+            // - null
+            // - equals 96 (your restricted customer)
+            if (!value || Number(value) === 96) {
+                $buttons.prop('disabled', true);
+                return;
+            }
+
+            // Otherwise enable
+            $buttons.prop('disabled', false);
+        });
+    
+        // Prevent duplicate click handlers
+        $buttons.off('click').on('click', (e) => {
+            const btn = e.currentTarget;
+            const customerId = $('#customer_id').val();
+        
+            if (!customerId) return;
+            this.assistiveModalActionParser(btn, `/contacts/${customerId}/edit`, [
+                {callback: this.editCustomer}
+            ]);
+        });
+    }
+
+    /**
+     * Handles customer edit form submission via AJAX.
+     *
+     * - Attaches click listeners to `.edit-contact-submit-btn`
+     * - Prevents default form submission
+     * - Resolves the closest parent form dynamically
+     * - Submits form data using Fetch API (supports Laravel method spoofing)
+     * - Expects JSON response with `status: success|error`
+     * - Displays toast notifications based on server response
+     * - Automatically resets form and closes modal on success
+     * - Ensures button state (disabled/loading) is safely restored via `finally`
+     *
+     * Dependencies:
+     * cloneNodeElement, disableElement, enableElement,
+     * toggleButtonContent, resolveClosestForm,
+     * formRouteParser, resetFormAndCloseModal,
+     * toast, route
+     */
+    editCustomer() {
+        const btns = document.querySelectorAll('.edit-contact-submit-btn');
+    
+        btns.forEach(btn => {
+            if (!btn) return;
+    
+            btn = cloneNodeElement(btn);
+    
+            btn.addEventListener('click', async (event) => {
+                event.preventDefault();
+    
+                disableElement(btn);
+                toggleButtonContent(btn);
+    
+                let form = resolveClosestForm(btn);
+    
+                if (!form) {
+                    toast('error', 3000, lang.generic_error);
+                    enableElement(btn);
+                    toggleButtonContent(btn, '', true);
+                    return;
+                }
+
+                const token = $('meta[name="csrf-token"]').attr('content') || '';
+    
+                let data = new FormData(form); 
+                let action = formRouteParser(form);
+    
+                try {
+                    const res = await fetch(action, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest', 
+                            'X-CSRF-TOKEN': token
+                        },
+                        body: jsonifyFormData(data)
+                    });
+    
+                    let response;
+    
+                    try {
+                        response = await res.json();
+                    } catch (e) {
+                        throw new Error(lang.invalid_json_exception);
+                    }
+    
+                    if (response && response?.success === true) {
+                        resetFormAndCloseModal(form);
+                        toast('success', 5000, response.msg || lang.undefined_error);
+                        return;
+                    }
+    
+                    if (response && response?.success === false) {
+                        toast('error', 5000, response.msg || lang.undefined_error);
+                        return;
+                    }
+    
+                    toast('error', 5000, lang.undefined_error);
+    
+                } catch (error) {
+                    console.error(error.message || error);
+
+                    toast(
+                        'error',
+                        5000,
+                        error.message || 'Server error, Please try again or contact the administrator!'
+                    );
+    
+                } finally {
+                    enableElement(btn);
+                    toggleButtonContent(btn, '', true);
+                }
+            });
+        });
+    }  
+    
+    initializePosPinSecurity() {  
+        this.lockCheck(); 
+        this.NumClicks(); 
+        this.lockPos(); 
+        this.disableManualInput(); 
+    }
+    
+    showPinInputModal() {   
+        this.ClearBoxInput(); 
+
+        var myModal = document.getElementById('pinModal');
+
+        if ($(myModal).hasClass('show')) {
+            this.lockCheck();
+        } else {
+            $('#pinModal').modal('show'); 
+        }
+
+        this.disableManualInput();
+    }
+
+    resetInactivityTimer(locker_duration) { 
+        var locker_duration = (locker_duration == undefined) ? 1000 : parseFloat(`${locker_duration}000`);
+        // console.log(locker_duration);
+        clearTimeout(this.inactivityTimer);
+        this.inactivityTimer = setTimeout(() => {
+            this.showPinInputModal(locker_duration);
+        }, locker_duration);
+    }
+
+    detectInactivity(locker_duration) {
+        console.log(locker_duration); 
+        
+        document.addEventListener('mousemove', (event) => {
+            this.resetInactivityTimer(locker_duration);
+        });
+
+        document.addEventListener('keypress', () => {
+            this.resetInactivityTimer(locker_duration);
+        });
+
+        // Initialize the timer
+        this.resetInactivityTimer(locker_duration);
+    }
+
+    lockPos() {
+        const lock_pos_btns = document.querySelectorAll('.lock_pos');
+        
+        lock_pos_btns.forEach(lock_pos_btn => {
+            lock_pos_btn.addEventListener('click', event => {
+                this.lockCheck();  
+            });
+        }); 
+    }
+
+    HandleKeypadEvents() {
+        document.addEventListener('keydown', (event) => { 
+            if (event.key >= '0' && event.key <= '9') {
+                this.appendPin(event.key);
+            } else if (event.key === 'Backspace') {
+                this.deleteLastDigit();
+            } else if (event.key === 'Enter') {
+                this.enterPin();
+            } else if (event.ctrlKey && event.key === 'L') {
+                console.log(event)
+                this.lockCheck();
+            }
+        });
+    }
+
+    disableManualInput() {
+        document.querySelectorAll('.pin-box').forEach(box => {
+            box.addEventListener('input', () => { 
+                box.value = '';
+            });
+        });
+    }
+
+    ClearBoxInput() { 
+        for (let i = 0; i < 5; i++) {
+            document.querySelector('.del-btn').click();
+        }
+    }
+
+    closeModal() {
+        $('#pinModal').modal('hide');  
+    }
+
+    NumClicks() { 
+        const pinButtons = document.querySelectorAll('.pin-button');
+
+        this.HandleKeypadEvents(); 
+
+        pinButtons.forEach(pinButton => {
+            pinButton.addEventListener('click', event => {
+                const buttonValue = event.target.getAttribute('data-val');
+
+                if (buttonValue == 'del') {
+                    this.deleteLastDigit();
+                }
+                else if (buttonValue == 'enter') {
+                    // buttonValue.disabled = true;
+                    this.enterPin();
+                } 
+                else {
+                    this.appendPin(buttonValue); 
+                }
+            });
+        });
+
+        this.disableManualInput();
+    }
+
+    appendPin(number) {
+        if (this.pinInput.length < this.pinBoxes.length) {
+            this.pinInput += number;
+            this.updatePinDisplay(); 
+        }
+    }
+
+    deleteLastDigit() {
+        this.pinInput = this.pinInput.slice(0, -1);
+        this.updatePinDisplay(); 
+    }
+
+    enterPin() {
+        var count = 0; 
+        this.pinBoxes.forEach(box => { 
+            if (box.value.length == 0)
+            {
+                count += 1;
+            } 
+        }); 
+
+        if (parseInt(this.pinInput) && count == 0) {  
+            this.authenticate(this.pinInput);
+        }
+        else if (count > 0) {
+            toast('error', 3000, "Please fill in correct pin to unlock POS!");   
+        }  
+        else {
+            toast('error', 3000, "Please fill in your pin to unlock POS!");  
+        } 
+    }
+
+    updatePinDisplay() {
+        this.pinDisplay.value = this.pinInput;
+        this.pinBoxes.forEach((box, index) => {
+            box.value = this.pinInput[index] || '';
+        });
+    }
+
+    authenticate(pin) {
+        clearTimeout(this.inactivityTimer);
+    
+        fetch('/pos/auth/pin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ pin: pin })
+        })
+        .then(res => res.json())
+        .then((response) => {
+            if (!response) {
+                toast('error', 3000, "Please fill correct pin to unlock POS!");
+                return;
+            }
+    
+            if (response.status === 'success') {
+                if (response.pin_disabled === false) {
+                    (new POS()).closeModal();
+    
+                    (new POS()).detectInactivity(
+                        response.locker_duration === undefined ? 1 : response.locker_duration
+                    );
+                    
+                    toast(response.status, 5000, response.message);
+    
+                } else {
+                    toast(response.status, 3000, "POS Pin is Disabled. Please enable to unlock!");
+                }
+    
+            } else {
+                toast(response.status, 3000, response.message);
+            }
+        })
+        .catch((error) => {
+            toast('error', 8000, "Unlock unsuccessfull. Please check your pin, make sure you are authorized to use POS.");
+        });
+    }
+
+    lockCheck() {
+        clearTimeout(this.inactivityTimer);
+    
+        fetch('/pos/auth/checkPinIfEnabled', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (!response) return;
+    
+            if (response.status === 'success') {
+                if (response.pin_disabled === false) {
+                    (new POS()).showPinInputModal();
+                }
+            }
+        })
+        .catch(() => {
+            console.error("lockCheck failed");
+        });
+    }     
 }
+
+document.addEventListener('DOMContentLoaded', event => {
+    const posIntance = new POS();
+    posIntance.initializePos(); 
+});

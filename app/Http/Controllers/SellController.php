@@ -193,6 +193,7 @@ class SellController extends Controller
             if ($this->businessUtil->isModuleEnabled('subscription')) {
                 $sells->addSelect('transactions.is_recurring', 'transactions.recur_parent_id');
             }
+
             $sales_order_statuses = Transaction::sales_order_statuses();
 
             // for zatca module Retrieve the 'is_zatca' parameter from the request; default to 0 if not provided and only comes 1 from zatca module
@@ -369,6 +370,24 @@ class SellController extends Controller
                     '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
                 )
                 ->editColumn(
+                    'shipping_charges',
+                    '<span class="shipping-charges" data-orig-value="{{$shipping_charges}}">@format_currency($shipping_charges)</span>'
+                )
+                ->editColumn(
+                    'commission_amount',
+                    function ($row) {
+                        $commission_amount = !empty($row->commission_amount) ? $row->commission_amount : 0; 
+                        return '<span class="commission-amount" data-orig-value="' . $commission_amount . '">' . $this->transactionUtil->num_f($commission_amount, true) . '</span>';
+                    }
+                ) 
+                ->editColumn(
+                    'cmmsn_percent',
+                    function ($row) {
+                        $cmmsn_percent = !empty($row->cmmsn_percent) ? ($row->cmmsn_percent . '%') : (0 . '%'); 
+                        return $cmmsn_percent;
+                    }
+                ) 
+                ->editColumn(
                     'total_paid',
                     '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
                 )
@@ -388,6 +407,18 @@ class SellController extends Controller
                         return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
                     }
                 )
+                ->editColumn(
+                    'quantity',
+                    function ($row) {
+                        return '<span class="quantity" data-quantity="'. (float) $row['quantity'].'" data-currency_symbol="false" data-orig-value="'. (float) $row['quantity'].'">'. (float) $row['quantity'].'</span>';
+                    }
+                )
+                ->editColumn(
+                    'units',
+                    function ($row) {
+                        return '<span class="units" data-quantity="'.$row['quantity'].'" data-unit="'.$row['unit'].'" data-currency_symbol="false" data-orig-value="'.$row['unit'].'">'.$row['unit'].'</span>';
+                    }
+                ) 
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn(
                     'payment_status',
@@ -519,7 +550,7 @@ class SellController extends Controller
                         }
                     }, ]);
 
-            $rawColumns = ['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'zatca_status'];
+            $rawColumns = ['quantity', 'units', 'final_total', 'action', 'total_paid', 'shipping_charges', 'commission_amount', 'cmmsn_percent', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'zatca_status'];
 
             return $datatable->rawColumns($rawColumns)
                       ->skipTotalRecords()

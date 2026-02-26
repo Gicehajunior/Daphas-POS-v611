@@ -330,6 +330,7 @@ $(document).ready( function(){
 
     rp_log_table = $('#rp_log_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[0, 'desc']],
@@ -344,6 +345,7 @@ $(document).ready( function(){
 
     supplier_stock_report_table = $('#supplier_stock_report_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         'ajax': {

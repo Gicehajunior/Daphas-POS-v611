@@ -182,9 +182,42 @@ class CashRegisterController extends Controller
         $payment_types = $this->cashRegisterUtil->payment_types($register_details->location_id, true, $business_id);
 
         $pos_settings = ! empty(request()->session()->get('business.pos_settings')) ? json_decode(request()->session()->get('business.pos_settings'), true) : [];
+        
+        $expense_transaction_details = $details['expense_transaction_details'];
+        $registerId = $register_details['RegisterId'];
+
+        $all_expenses = $this->cashRegisterUtil->compute_expenses(
+            $business_id, 
+            $filters = [
+                'start_date' => date("Y-m-d"),
+                'end_date' => date("Y-m-d"),
+                'register_details' => $register_details,
+            ], 
+            'by_category'
+        ); 
+
+        $expenses = $all_expenses['expenses'];
+
+        $total_expenses = $all_expenses['total_expenses'];
+
+        $commission_total_amount = $this->cashRegisterUtil->compute_commission_totals(
+            $business_id, 
+            $filters = [
+                'start_date' => date("Y-m-d"),
+                'end_date' => date("Y-m-d")
+            ], 
+            'by_category'
+        );
 
         return view('cash_register.close_register_modal')
-                    ->with(compact('register_details', 'details', 'payment_types', 'pos_settings'));
+            ->with(compact(
+                'register_details', 
+                'details', 
+                'expenses',  
+                'payment_types', 
+                'pos_settings'
+            )
+        );
     }
 
     /**

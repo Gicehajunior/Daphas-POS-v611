@@ -52,6 +52,7 @@ use App\Utils\ModuleUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
+use App\Utils\Custom\CustomMpesaUtil;
 use App\Variation;
 use App\Warranty;
 use Illuminate\Http\Request;
@@ -81,6 +82,8 @@ class SellPosController extends Controller
 
     protected $moduleUtil;
 
+    protected $mpesaUtil;
+
     protected $notificationUtil;
 
     /**
@@ -96,6 +99,7 @@ class SellPosController extends Controller
         TransactionUtil $transactionUtil,
         CashRegisterUtil $cashRegisterUtil,
         ModuleUtil $moduleUtil,
+        CustomMpesaUtil $mpesaUtil,
         NotificationUtil $notificationUtil
     ) {
         $this->contactUtil = $contactUtil;
@@ -104,6 +108,7 @@ class SellPosController extends Controller
         $this->transactionUtil = $transactionUtil;
         $this->cashRegisterUtil = $cashRegisterUtil;
         $this->moduleUtil = $moduleUtil;
+        $this->mpesaUtil = $mpesaUtil;
         $this->notificationUtil = $notificationUtil;
 
         $this->dummyPaymentLine = [
@@ -897,7 +902,7 @@ class SellPosController extends Controller
                     $input['invoice_scheme_id'] = $request->input('invoice_scheme_id');
                 }
 
-                // /lacks in v4.7.8
+                // Added by Giceha Junior: https://github.com/Gicehajunior
                     // commission edit by giceha
                     $input['commission_amount'] = !empty($request->input('commission_amount')) ? $this->commonUtil->num_uf($request->input('commission_amount')) : null;
                     $input['cmmsn_percent'] = !empty($request->input('cmmsn_percent')) ? $this->commonUtil->num_uf($request->input('cmmsn_percent')) : null;
@@ -911,9 +916,10 @@ class SellPosController extends Controller
                     $input['invoice_token'] = $request->input('invoice_token') ? $request->input('invoice_token') : null; 
                     $input['tims_TSIN'] = $request->input('TSIN') ? $request->input('TSIN') : null; 
                     $input['tims_CUIN'] = $request->input('CUIN') ? $request->input('CUIN') : null; 
+                    $input['tims_CUSN'] = $request->input('CUSN') ? $request->input('CUSN') : null; 
                     $input['tims_QRCode'] = $request->input('QRCode') ? $request->input('QRCode') : null; 
                     $input['tims_DtStmp'] = $request->input('DtStmp') ? $request->input('DtStmp') : null;
-                // lacks in v4.7.8
+                // /Added by Giceha Junior: https://github.com/Gicehajunior
 
                 //Types of service
                 if ($this->moduleUtil->isModuleEnabled('types_of_service')) {
@@ -1221,7 +1227,7 @@ class SellPosController extends Controller
 
             $output = [
                 'success' => 0,
-                'msg' => $msg,
+                'msg' => $e->getMessage()
             ];
         }
 

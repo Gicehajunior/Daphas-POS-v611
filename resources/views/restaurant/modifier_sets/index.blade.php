@@ -94,6 +94,7 @@
             //Brands table
             var modifier_table = $('#modifier_table').DataTable({
                     processing: true,
+                        pageLength: 10,
                     serverSide: true,
                     fixedHeader:false,
                     ajax: '/modules/modifiers',

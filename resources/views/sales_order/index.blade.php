@@ -96,6 +96,7 @@ $(document).ready( function(){
     });
     sell_table = $('#sell_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[1, 'desc']],

@@ -37,16 +37,30 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mt-15">
-                <label class="radio-inline">
-                    <input type="radio" name="contact_type_radio" id="inlineRadio1" value="individual">
-                    @lang('lang_v1.individual')
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="contact_type_radio" id="inlineRadio2" value="business">
-                    @lang('business.business')
-                </label>
+            
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="contact_type">
+                        @lang('custom.contact_category')
+                    </label>
+
+                    <select name="contact_category" id="contact_category" class="form-control searchSelect" required>
+                        <option value="">
+                            -- @lang('messages.please_select') --
+                        </option>
+
+                        <option value="individual">
+                            @lang('custom.individual_category')
+                        </option>
+
+                        <option value="business">
+                            @lang('custom.business_category')
+                        </option>
+
+                    </select>
+                </div>
             </div>
+
             <div class="col-md-4">
                 <div class="form-group">
                     {!! Form::label('contact_id', __('lang_v1.contact_id') . ':') !!}
@@ -229,10 +243,13 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm center-block more_btn" data-target="#more_div">@lang('lang_v1.more_info') <i class="fa fa-chevron-down"></i></button>
+                <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm btn-sm center-block" data-toggle="collapse" data-target="#more_create_div_collapse">
+                    @lang('lang_v1.more_info') 
+                    <i class="fa fa-chevron-down"></i>
+                </button>
             </div>
 
-            <div id="more_div" class="hide">
+            <div id="more_create_div_collapse" class="collapse">
                 {!! Form::hidden('position', null, ['id' => 'position']); !!}
 
                 <div class="col-md-12"><hr/></div>

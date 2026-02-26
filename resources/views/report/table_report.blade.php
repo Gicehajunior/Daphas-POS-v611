@@ -90,6 +90,7 @@
 
             table_report = $('#table_report').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {

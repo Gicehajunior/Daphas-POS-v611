@@ -557,6 +557,7 @@ $(document).ready(function() {
     //Purchase table
     purchase_table = $('#purchase_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         scrollY: "75vh",

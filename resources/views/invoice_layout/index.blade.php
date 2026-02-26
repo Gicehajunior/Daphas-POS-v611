@@ -46,6 +46,7 @@
     $(document).ready( function(){
         var barcode_table = $('#barcode_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             buttons:[],

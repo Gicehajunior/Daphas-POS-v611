@@ -56,6 +56,7 @@
     $(document).ready( function(){
         var users_table = $('#users_table').DataTable({
                     processing: true,
+                        pageLength: 10,
                     serverSide: true,
                     fixedHeader:false,
                     ajax: '/users',

@@ -21,6 +21,7 @@
                 var category_type = $('#category_type').val();
                 category_table = $('#category_table').DataTable({
                     processing: true,
+                        pageLength: 10,
                     serverSide: true,
                     fixedHeader:false,
                     ajax: '/taxonomies?type=' + category_type,

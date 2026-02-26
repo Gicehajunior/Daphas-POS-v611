@@ -108,11 +108,11 @@
             <section class="invoice print_section" id="receipt_section">
             </section>
         </main>
+        
+        <div class="modal fade edit-customer-modal" id="editCustomerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
         @include('home.todays_profit_modal')
         <!-- /.content-wrapper -->
-
-
 
         <audio id="success-audio">
             <source src="{{ asset('/audio/success.ogg?v=' . $asset_v) }}" type="audio/ogg">
@@ -125,7 +125,7 @@
         <audio id="warning-audio">
             <source src="{{ asset('/audio/warning.ogg?v=' . $asset_v) }}" type="audio/ogg">
             <source src="{{ asset('/audio/warning.mp3?v=' . $asset_v) }}" type="audio/mpeg">
-        </audio>
+        </audio> 
 
         @if (!empty($__additional_html))
             {!! $__additional_html !!}
@@ -145,46 +145,45 @@
         <div>
             <div class="overlay tw-hidden"></div>
         </div>
-
-</body>
-<style>
-    @media print {
-        #scrollable-container {
-            overflow: visible !important;
-            height: auto !important;
+    </body>
+    <style>
+        @media print {
+            #scrollable-container {
+                overflow: visible !important;
+                height: auto !important;
+            }
+            
+            /* Hide side menu */
+            .side-bar,
+            .thetop > aside {
+                display: none !important;
+            }
         }
-        
-        /* Hide side menu */
-        .side-bar,
-        .thetop > aside {
-            display: none !important;
+    </style>
+    <style>
+        .small-view-side-active {
+            display: grid !important;
+            z-index: 1000;
+            position: absolute;
         }
-    }
-</style>
-<style>
-    .small-view-side-active {
-        display: grid !important;
-        z-index: 1000;
-        position: absolute;
-    }
-    .overlay {
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.8);
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: none;
-        z-index: 20;
-    }
+        .overlay {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+            z-index: 20;
+        }
 
-    .tw-dw-btn.tw-dw-btn-xs.tw-dw-btn-outline {
-        width: max-content;
-        margin: 2px;
-    }
+        .tw-dw-btn.tw-dw-btn-xs.tw-dw-btn-outline {
+            width: max-content;
+            margin: 2px;
+        }
 
-    #scrollable-container{
-        position:relative;
-    } 
-</style>
+        #scrollable-container{
+            position:relative;
+        } 
+    </style>
 </html>

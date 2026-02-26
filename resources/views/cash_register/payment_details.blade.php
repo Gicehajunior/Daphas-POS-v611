@@ -174,6 +174,12 @@
       </tr>
     </table>
     <hr>
+
+    <!-- Expense Incurred -->
+    @include("cash_register.expenses_summary")
+    <!-- /End of Expenses incurred -->
+    
+    <hr>
     <table class="table table-condensed">
       <tr>
         <td>

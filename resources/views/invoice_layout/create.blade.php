@@ -664,6 +664,22 @@
           <div class="form-group">
             <div class="checkbox">
               <label>
+                {!! Form::checkbox('show_quantity', 1, true, ['class' => 'input-icheck']); !!} @lang('custom.show_quantity')</label>
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_unit', 1, true, ['class' => 'input-icheck']); !!} @lang('custom.show_unit')</label>
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
                 {!! Form::checkbox('show_cat_code', 1, false, ['class' => 'input-icheck']); !!} @lang('lang_v1.show_cat_code')</label>
               </div>
           </div>

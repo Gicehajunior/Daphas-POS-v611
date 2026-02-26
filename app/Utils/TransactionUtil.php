@@ -75,6 +75,17 @@ class TransactionUtil extends Util
             'discount_amount' => $uf_data ? $this->num_uf($input['discount_amount']) : $input['discount_amount'],
             'tax_amount' => $invoice_total['tax'],
             'final_total' => $final_total,
+                        
+            // Added by Giceha Junior: https://github.com/Gicehajunior
+            'invoice_token' => !empty($input['invoice_token']) ? $input['invoice_token'] : null,
+            'tax_amount' => !empty($input['tax_amount']) ? $input['tax_amount'] : 0,
+            'tims_TSIN' => !empty($input['tims_TSIN']) ? $input['tims_TSIN'] : null,
+            'tims_CUIN' => !empty($input['tims_CUIN']) ? $input['tims_CUIN'] : null,
+            'tims_CUSN' => !empty($input['tims_CUSN']) ? $input['tims_CUSN'] : null,
+            'tims_QRCode' => !empty($input['tims_QRCode']) ? $input['tims_QRCode'] : null,
+            'tims_DtStmp' => !empty($input['tims_DtStmp']) ? $input['tims_DtStmp'] : null,
+            // /Added by Giceha Junior: https://github.com/Gicehajunior
+
             'additional_notes' => ! empty($input['sale_note']) ? $input['sale_note'] : null,
             'staff_note' => ! empty($input['staff_note']) ? $input['staff_note'] : null,
             'created_by' => $user_id,
@@ -1454,7 +1465,7 @@ class TransactionUtil extends Util
         $output['tax_label'] .= ':';
         $output['tax'] = ($transaction->tax_amount != 0) ? $this->num_f($transaction->tax_amount, $show_currency, $business_details) : 0;
 
-        if ($transaction->tax_amount != 0 && $tax->is_tax_group) {
+        if ($transaction->tax_amount != 0 && !empty($tax) && $tax->is_tax_group) {
             $transaction_group_tax_details = $this->groupTaxDetails($tax, $transaction->tax_amount);
 
             $output['group_tax_details'] = [];
@@ -1593,6 +1604,12 @@ class TransactionUtil extends Util
         if (! empty($transaction->additional_expense_value_4) && ! empty($transaction->additional_expense_key_4)) {
             $output['additional_expenses'][$transaction->additional_expense_key_4] = $this->num_f($transaction->additional_expense_value_4, $show_currency, $business_details);
         }
+
+        // check for quantity viewability
+        $output['show_quantity'] = $il->show_quantity; 
+
+        // check for unit viewability
+        $output['show_unit'] = $il->show_unit;
 
         //Check for barcode
         $output['barcode'] = ($il->show_barcode == 1) ? $transaction->invoice_no : false;
@@ -5130,7 +5147,14 @@ class TransactionUtil extends Util
                     function ($join) {
                         $join->on('tsl_agg.transaction_id', '=', 'transactions.id');
                     }
-                )
+                ) 
+                ->leftJoin('transaction_sell_lines as tsl', function ($join) {
+                    $join->on('transactions.id', '=', 'tsl.transaction_id')
+                        ->whereNull('tsl.parent_sell_line_id');
+                })
+                ->leftJoin('variations as v', 'tsl.variation_id', '=', 'v.id') // added by Giceha
+                ->leftJoin('products as p', 'v.product_id', '=', 'p.id')  
+                ->leftJoin('units as p_units', 'p.unit_id', '=', 'p_units.id')  
                 ->select(
                     'transactions.id',
                     'transactions.transaction_date',
@@ -5138,6 +5162,9 @@ class TransactionUtil extends Util
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
                     'transactions.invoice_no as invoice_no_text',
+                    'p.name as product_name',  // added by Giceha
+                    'tsl.quantity', // added by Giceha
+                    'p_units.short_name as unit', 
                     'contacts.name',
                     'contacts.mobile',
                     'contacts.contact_id',
@@ -5154,6 +5181,9 @@ class TransactionUtil extends Util
                     'transactions.rp_earned',
                     'transactions.types_of_service_id',
                     'transactions.shipping_status',
+                    'transactions.commission_amount',
+                    'transactions.cmmsn_percent', 
+                    'transactions.shipping_charges',
                     'transactions.pay_term_number',
                     'transactions.pay_term_type',
                     'transactions.additional_notes',

@@ -110,6 +110,7 @@
             //Purchase table
             purchase_order_table = $('#purchase_order_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 aaSorting: [
                     [1, 'desc']

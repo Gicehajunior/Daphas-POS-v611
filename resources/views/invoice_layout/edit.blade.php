@@ -659,6 +659,22 @@
                 {!! Form::checkbox('show_sku', 1, $invoice_layout->show_sku, ['class' => 'input-icheck']); !!} @lang('lang_v1.show_sku')</label>
               </div>
           </div>
+        </div> 
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_quantity', 1, $invoice_layout->show_quantity, ['class' => 'input-icheck']); !!} @lang('custom.show_quantity')</label>
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('show_unit', 1, $invoice_layout->show_unit, ['class' => 'input-icheck']); !!} @lang('custom.show_unit')</label>
+              </div>
+          </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">

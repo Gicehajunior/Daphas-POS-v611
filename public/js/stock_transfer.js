@@ -135,6 +135,7 @@ $(document).ready(function() {
 
     stock_transfer_table = $('#stock_transfer_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         aaSorting: [[0, 'desc']],

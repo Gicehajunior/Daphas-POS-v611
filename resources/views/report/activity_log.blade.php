@@ -80,6 +80,7 @@
 
         activity_log_table = $('#activity_log_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             aaSorting: [[0, 'desc']],

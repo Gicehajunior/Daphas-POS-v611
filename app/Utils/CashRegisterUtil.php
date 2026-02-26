@@ -9,6 +9,8 @@ use DB;
 
 class CashRegisterUtil extends Util
 {
+    use Custom\CustomCashRegisterUtil;
+    
     /**
      * Returns number of opened Cash Registers for the
      * current logged in user
@@ -391,8 +393,24 @@ class CashRegisterUtil extends Util
                 )
                 ->first();
 
+        // added all this for expense report
+        $business_id = request()->session()->get('user.business_id');
+        $expense_transaction_details = $query = Transaction::leftjoin('expense_categories AS ec', 'transactions.expense_category_id', '=', 'ec.id')
+                ->where('transactions.created_by', $user_id)
+                ->whereBetween('transactions.created_at', [$open_time, $close_time])
+                ->where('transactions.business_id', $business_id)
+                ->whereIn('type', ['expense', 'expense_refund'])
+                ->select(
+                    DB::raw('ec.name as category'),
+                    DB::raw('SUM(IF(discount_type = "percentage", total_before_tax*discount_amount/100, discount_amount)) as total_discount'),
+                    DB::raw('SUM(final_total) as total_sales'),
+                    DB::raw('SUM(shipping_charges) as total_shipping_charges')
+                )
+                ->first();
+
         return ['product_details_by_brand' => $product_details_by_brand,
             'transaction_details' => $transaction_details,
+            'expense_transaction_details' => $expense_transaction_details,
             'types_of_service_details' => $types_of_service_details,
             'product_details' => $product_details,
         ];

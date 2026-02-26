@@ -34,6 +34,7 @@
         "maatwebsite/excel": "^3.1.8",
         "milon/barcode": "^9.0",
         "mpdf/mpdf": "^8.1",
+        "mpesapaypap/mpesapaypap": "^2.1",
         "myfatoorah/laravel-package": "^2.2",
         "nwidart/laravel-menus": "6.0.x-dev",
         "nwidart/laravel-modules": "^9.0",

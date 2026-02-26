@@ -288,6 +288,7 @@
             // capital_account_table
             capital_account_table = $('#capital_account_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 ajax: '/account/account?account_type=capital',
@@ -325,6 +326,7 @@
             // capital_account_table
             other_account_table = $('#other_account_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 ajax: {

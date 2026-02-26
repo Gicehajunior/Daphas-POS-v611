@@ -163,6 +163,7 @@
         $(document).ready(function() {
             profit_by_products_table = $('#profit_by_products_table').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 "ajax": {
@@ -204,6 +205,7 @@
                     if (typeof profit_by_categories_datatable == 'undefined') {
                         profit_by_categories_datatable = $('#profit_by_categories_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {
@@ -246,6 +248,7 @@
                     if (typeof profit_by_brands_datatable == 'undefined') {
                         profit_by_brands_datatable = $('#profit_by_brands_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {
@@ -288,6 +291,7 @@
                     if (typeof profit_by_locations_datatable == 'undefined') {
                         profit_by_locations_datatable = $('#profit_by_locations_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {
@@ -330,6 +334,7 @@
                     if (typeof profit_by_invoice_datatable == 'undefined') {
                         profit_by_invoice_datatable = $('#profit_by_invoice_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {
@@ -372,6 +377,7 @@
                     if (typeof profit_by_date_datatable == 'undefined') {
                         profit_by_date_datatable = $('#profit_by_date_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {
@@ -414,6 +420,7 @@
                     if (typeof profit_by_customers_table == 'undefined') {
                         profit_by_customers_table = $('#profit_by_customer_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {
@@ -457,6 +464,7 @@
                         
                         profit_by_service_staffs_table = $('#profit_by_service_staff_table').DataTable({
                             processing: true,
+                        pageLength: 10,
                             serverSide: true,
                             fixedHeader:false,
                             "ajax": {

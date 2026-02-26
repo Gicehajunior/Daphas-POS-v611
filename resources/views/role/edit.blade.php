@@ -465,6 +465,8 @@
         <hr>
         @endif
 
+        @include('role.partials.customs')
+
         @if(in_array('stock_adjustment', $enabled_modules))
         <div class="row check_group">
         <div class="col-md-1">

@@ -732,7 +732,7 @@ class ProductController extends Controller
             $product->warranty_id = ! empty($request->input('warranty_id')) ? $request->input('warranty_id') : null;
             $product->secondary_unit_id = ! empty($request->input('secondary_unit_id')) ? $request->input('secondary_unit_id') : null;
             $product->tax_exempted = !empty($request->input('tax_exempted')) ? $request->input('tax_exempted') : null;
-
+            
             if (! empty($request->input('enable_stock')) && $request->input('enable_stock') == 1) {
                 $product->enable_stock = 1;
             } else {

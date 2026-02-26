@@ -3188,7 +3188,7 @@ function resetFormAndCloseModal(form) {
         element.classList.remove('is-valid', 'is-invalid');
     });
 
-    closeModal(form);
+    __closeModal(form);
 }
 
 /**
@@ -3211,6 +3211,28 @@ function closeModal(domEl) {
                 }
             });
         }
+    }
+}
+
+/**
+ * Closes the modal if the given element is inside one.
+ * Compatible with Bootstrap 4 (jQuery-based).
+ *
+ * @param {Element} domEl
+ */
+ function __closeModal(domEl) {
+    let $modal = $(domEl).closest('.modal');
+
+    if ($modal.length) {
+        // Hide modal (Bootstrap 4)
+        $modal.modal('hide');
+
+        // Properly destroy select2 instances inside modal
+        $modal.find('.searchSelect').each(function () {
+            if ($(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2('destroy');
+            }
+        });
     }
 }
 
@@ -3425,6 +3447,16 @@ function filtersParser(selector, dateRangeDays = 30) {
 }
 
 /**
+ * Jsonify Form data and parse to backend as Json formatted.
+ * 
+ * @param {FormData} data 
+ * @returns json
+ */
+ function jsonifyFormData(data) {
+    return JSON.stringify(Object.fromEntries(data));
+}
+
+/**
  * Watches inputs in a container and triggers a callback on change.
  * 
  * @param {string} selector - The CSS selector for the filters container.
@@ -3581,4 +3613,4 @@ function computeFooterTotalsUtil(api) {
             );
         }
     });
-} 
+}  

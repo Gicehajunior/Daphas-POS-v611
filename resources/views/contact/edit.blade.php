@@ -1,22 +1,22 @@
+@php
+
+if(isset($update_action)) {
+    $url = $update_action;
+    $customer_groups = [];
+    $opening_balance = 0;
+    $lead_users = $contact->leadUsers->pluck('id');
+} else {
+  $url = action([\App\Http\Controllers\ContactController::class, 'update'], [$contact->id]);
+  $sources = [];
+  $life_stages = [];
+  $lead_users = [];
+  $assigned_to_users = $contact->userHavingAccess->pluck('id');
+}
+
+@endphp
+
 <div class="modal-dialog modal-lg" role="document">
   <div class="modal-content">
-
-  @php
-
-    if(isset($update_action)) {
-        $url = $update_action;
-        $customer_groups = [];
-        $opening_balance = 0;
-        $lead_users = $contact->leadUsers->pluck('id');
-    } else {
-      $url = action([\App\Http\Controllers\ContactController::class, 'update'], [$contact->id]);
-      $sources = [];
-      $life_stages = [];
-      $lead_users = [];
-      $assigned_to_users = $contact->userHavingAccess->pluck('id');
-    }
-  @endphp
-
     {!! Form::open(['url' => $url, 'method' => 'PUT', 'id' => 'contact_edit_form']) !!}
 
     <div class="modal-header">
@@ -25,9 +25,7 @@
     </div>
 
     <div class="modal-body">
-
       <div class="row">
-
         <div class="col-md-4">
           <div class="form-group">
               {!! Form::label('type', __('contact.contact_type') . ':*' ) !!}
@@ -35,20 +33,36 @@
                   <span class="input-group-addon">
                       <i class="fa fa-user"></i>
                   </span>
-                  {!! Form::select('type', $types, $contact->type, ['class' => 'form-control', 'id' => 'contact_type','placeholder' => __('messages.please_select'), 'required']); !!}
+                  {!! Form::select('type', $types, $contact->type, ['class' => 'form-control searchSelect', 'id' => 'contact_type','placeholder' => __('messages.please_select'), 'required']); !!}
               </div>
           </div>
         </div>
-        <div class="col-md-4 mt-15">
-            <label class="radio-inline">
-                <input type="radio" name="contact_type_radio" @if($contact->contact_type == 'individual') checked @endif id="inlineRadio1" value="individual">
-                @lang('lang_v1.individual')
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="contact_type_radio" @if($contact->contact_type == 'business') checked @endif id="inlineRadio2" value="business">
-                @lang('business.business')
-            </label>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="contact_type">
+                    @lang('custom.contact_category')
+                </label>
+
+                <select name="contact_category" id="contact_category" class="form-control searchSelect" required>
+                    <option value="">
+                        -- @lang('messages.please_select') --
+                    </option>
+
+                    <option value="individual" 
+                        {{ $contact->contact_type === 'individual' ? 'selected' : '' }}>
+                        @lang('custom.individual_category')
+                    </option>
+
+                    <option value="business" 
+                        {{ $contact->contact_type === 'business' ? 'selected' : '' }}>
+                        @lang('custom.business_category')
+                    </option>
+
+                </select>
+            </div>
         </div>
+
         <div class="col-md-4">
           <div class="form-group">
               {!! Form::label('contact_id', __('lang_v1.contact_id') . ':') !!}
@@ -71,7 +85,7 @@
                   <span class="input-group-addon">
                       <i class="fa fa-users"></i>
                   </span>
-                  {!! Form::select('customer_group_id', $customer_groups, $contact->customer_group_id, ['class' => 'form-control']); !!}
+                  {!! Form::select('customer_group_id', $customer_groups, $contact->customer_group_id, ['class' => 'form-control searchSelect']); !!}
               </div>
           </div>
         </div>
@@ -181,7 +195,7 @@
                   <span class="input-group-addon">
                       <i class="fas fa fa-search"></i>
                   </span>
-                  {!! Form::select('crm_source', $sources, $contact->crm_source , ['class' => 'form-control', 'id' => 'crm_source','placeholder' => __('messages.please_select')]); !!}
+                  {!! Form::select('crm_source', $sources, $contact->crm_source , ['class' => 'form-control searchSelect', 'id' => 'crm_source','placeholder' => __('messages.please_select')]); !!}
               </div>
           </div>
         </div>
@@ -192,7 +206,7 @@
                   <span class="input-group-addon">
                       <i class="fas fa fa-life-ring"></i>
                   </span>
-                  {!! Form::select('crm_life_stage', $life_stages, $contact->crm_life_stage , ['class' => 'form-control', 'id' => 'crm_life_stage','placeholder' => __('messages.please_select')]); !!}
+                  {!! Form::select('crm_life_stage', $life_stages, $contact->crm_life_stage , ['class' => 'form-control searchSelect', 'id' => 'crm_life_stage','placeholder' => __('messages.please_select')]); !!}
               </div>
           </div>
         </div>
@@ -203,7 +217,7 @@
                   <span class="input-group-addon">
                       <i class="fa fa-user"></i>
                   </span>
-                  {!! Form::select('user_id[]', $users, $lead_users , ['class' => 'form-control select2', 'id' => 'user_id', 'multiple', 'required', 'style' => 'width: 100%;']); !!}
+                  {!! Form::select('user_id[]', $users, $lead_users , ['class' => 'form-control searchSelect select2', 'id' => 'user_id', 'multiple', 'required', 'style' => 'width: 100%;']); !!}
               </div>
           </div>
         </div>
@@ -217,17 +231,20 @@
                         <span class="input-group-addon">
                             <i class="fa fa-user"></i>
                         </span>
-                        {!! Form::select('assigned_to_users[]', $users, $assigned_to_users ?? [] , ['class' => 'form-control select2', 'id' => 'assigned_to_users', 'multiple', 'style' => 'width: 100%;']); !!}
+                        {!! Form::select('assigned_to_users[]', $users, $assigned_to_users ?? [] , ['class' => 'form-control searchSelect select2', 'id' => 'assigned_to_users', 'multiple', 'style' => 'width: 100%;']); !!}
                     </div>
                 </div>
           </div>
         @endif
 
         <div class="col-md-12">
-            <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white center-block more_btn" data-target="#more_div">@lang('lang_v1.more_info') <i class="fa fa-chevron-down"></i></button>
+            <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-sm btn-sm center-block" data-toggle="collapse" data-target="#more_edit_div_collapse">
+                @lang('lang_v1.more_info') 
+                <i class="fa fa-chevron-down"></i>
+            </button>
         </div>
-        
-        <div id="more_div" class="hide">
+
+        <div id="more_edit_div_collapse" class="collapse">
             <div class="col-md-12"><hr/></div>
 
             <div class="col-md-4"> 
@@ -267,7 +284,7 @@
                 <br/>
                 {!! Form::number('pay_term_number', $contact->pay_term_number, ['class' => 'form-control width-40 pull-left', 'placeholder' => __('contact.pay_term')]); !!}
 
-                {!! Form::select('pay_term_type', ['months' => __('lang_v1.months'), 'days' => __('lang_v1.days')], $contact->pay_term_type, ['class' => 'form-control width-60 pull-left','placeholder' => __('messages.please_select')]); !!}
+                {!! Form::select('pay_term_type', ['months' => __('lang_v1.months'), 'days' => __('lang_v1.days')], $contact->pay_term_type, ['class' => 'form-control width-60 pull-left searchSelect','placeholder' => __('messages.please_select')]); !!}
                 </div>
             </div>
             </div>
@@ -591,7 +608,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white">@lang( 'messages.update' )</button>
+      <button type="submit" class="tw-dw-btn tw-dw-btn-primary tw-text-white edit-contact-submit-btn">@lang( 'messages.update' )</button>
       <button type="button" class="tw-dw-btn tw-dw-btn-neutral tw-text-white" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
 

@@ -145,6 +145,7 @@ function getDocAndNoteIndexPage() {
 function initializeDocumentAndNoteDataTable() {
     documents_and_notes_data_table = $('#documents_and_notes_table').DataTable({
         processing: true,
+                        pageLength: 10,
         serverSide: true,
         fixedHeader:false,
         ajax:{

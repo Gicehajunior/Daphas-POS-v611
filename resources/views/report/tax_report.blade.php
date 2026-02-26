@@ -265,6 +265,7 @@
 
         input_tax_table = $('#input_tax_table').DataTable({
             processing: true,
+                        pageLength: 10,
             serverSide: true,
             fixedHeader:false,
             ajax: {
@@ -316,6 +317,7 @@
                 if (typeof (output_tax_datatable) == 'undefined') {
                     output_tax_datatable = $('#output_tax_table').DataTable({
                         processing: true,
+                        pageLength: 10,
                         serverSide: true,
                         fixedHeader:false,
                         aaSorting: [[0, 'desc']],
@@ -367,6 +369,7 @@
                 if (typeof (expense_tax_datatable) == 'undefined') {
                     expense_tax_datatable = $('#expense_tax_table').DataTable({
                         processing: true,
+                        pageLength: 10,
                         serverSide: true,
                         fixedHeader:false,
                         ajax: {

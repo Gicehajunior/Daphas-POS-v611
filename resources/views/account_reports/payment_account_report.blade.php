@@ -84,6 +84,7 @@
 
             payment_account_report = $('#payment_account_report').DataTable({
                 processing: true,
+                        pageLength: 10,
                 serverSide: true,
                 fixedHeader:false,
                 "ajax": {

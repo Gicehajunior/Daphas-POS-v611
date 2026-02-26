@@ -14,62 +14,97 @@
 {!! Form::open(['url' => action([\App\Http\Controllers\ManageUserController::class, 'store']), 'method' => 'post', 'id' => 'user_add_form' ]) !!}
   <div class="row">
     <div class="col-md-12">
-  @component('components.widget')
-      <div class="col-md-2">
-        <div class="form-group">
-          {!! Form::label('surname', __( 'business.prefix' ) . ':') !!}
-            {!! Form::text('surname', null, ['class' => 'form-control', 'placeholder' => __( 'business.prefix_placeholder' ) ]); !!}
+      @component('components.widget')
+        <div class="col-md-2">
+          <div class="form-group">
+            {!! Form::label('surname', __( 'business.prefix' ) . ':') !!}
+              {!! Form::text('surname', null, ['class' => 'form-control', 'placeholder' => __( 'business.prefix_placeholder' ) ]); !!}
+          </div>
         </div>
-      </div>
-      <div class="col-md-5">
-        <div class="form-group">
-          {!! Form::label('first_name', __( 'business.first_name' ) . ':*') !!}
-            {!! Form::text('first_name', null, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.first_name' ) ]); !!}
+        <div class="col-md-3">
+          <div class="form-group">
+            {!! Form::label('first_name', __( 'business.first_name' ) . ':*') !!}
+              {!! Form::text('first_name', null, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.first_name' ) ]); !!}
+          </div>
         </div>
-      </div>
-      <div class="col-md-5">
-        <div class="form-group">
-          {!! Form::label('last_name', __( 'business.last_name' ) . ':') !!}
-            {!! Form::text('last_name', null, ['class' => 'form-control', 'placeholder' => __( 'business.last_name' ) ]); !!}
-        </div>
-      </div>
-      <div class="clearfix"></div>
-      <div class="col-md-4">
-        <div class="form-group">
-          {!! Form::label('email', __( 'business.email' ) . ':*') !!}
-            {!! Form::text('email', null, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.email' ) ]); !!}
-        </div>
-      </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            {!! Form::label('last_name', __( 'business.last_name' ) . ':') !!}
+              {!! Form::text('last_name', null, ['class' => 'form-control', 'placeholder' => __( 'business.last_name' ) ]); !!}
+          </div>
+        </div> 
 
-      <div class="col-md-2">
-        <div class="form-group">
-          <div class="checkbox">
-            <br/>
-            <label>
-                 {!! Form::checkbox('is_active', 'active', true, ['class' => 'input-icheck status']); !!} {{ __('lang_v1.status_for_user') }}
-            </label>
-            @show_tooltip(__('lang_v1.tooltip_enable_user_active'))
+        <div class="col-md-4">
+          <div class="form-group">
+            {!! Form::label('email', __( 'business.email' ) . ':*') !!}
+              {!! Form::text('email', null, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.email' ) ]); !!}
           </div>
         </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <div class="checkbox">
-            <br/>
-            <label>
-                 {!! Form::checkbox('is_enable_service_staff_pin', 1, false, ['class' => 'input-icheck status', 'id' => 'is_enable_service_staff_pin']); !!} {{ __('lang_v1.enable_service_staff_pin') }}
-            </label>
-            @show_tooltip(__('lang_v1.tooltip_is_enable_service_staff_pin'))
+
+        <div class="col-md-4">
+          <div class="form-group">
+            {!! Form::label('pos_pin', __( 'custom.pos_pin' ) . ':*') !!}
+            {!! Form::text('pos_pin', null, ['class' => 'form-control', 'placeholder' => __( 'custom.pos_pin_placeholder' ) ]); !!}
+            <small>N/B: Should be pin of 5 total digits.</small>
           </div>
         </div>
-      </div>
-      <div class="col-md-2 hide service_staff_pin_div">
-        <div class="form-group">
-          {!! Form::label('service_staff_pin', __( 'lang_v1.staff_pin' ) . ':') !!}
-            {!! Form::password('service_staff_pin', ['class' => 'form-control', 'required' => true, 'placeholder' => __( 'lang_v1.staff_pin' ) ]); !!}
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <div class="checkbox">
+              <br>
+              <label>
+                {!! Form::checkbox('is_employee', 1, true, ['class' => 'input-icheck is_employee', 'id' => 'is_employee']); !!} 
+                {{ __('custom.an_employee') }}
+              </label>
+              @show_tooltip(__('custom.an_employee_tooltip'))
+            </div>
+          </div>
         </div>
-      </div>
-  @endcomponent
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <div class="checkbox">
+              <br>
+              <label>
+                {!! Form::checkbox('is_service_staff', 1, true, ['class' => 'input-icheck is_service_staff', 'id' => 'is_service_staff']); !!} 
+                {{ __('custom.is_service_staff') }}
+              </label>
+              @show_tooltip(__('custom.is_service_staff_tooltip'))
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <div class="checkbox">
+              <br/>
+              <label>
+                  {!! Form::checkbox('is_active', 'active', true, ['class' => 'input-icheck status']); !!} {{ __('lang_v1.status_for_user') }}
+              </label>
+              @show_tooltip(__('lang_v1.tooltip_enable_user_active'))
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <div class="checkbox">
+              <br/>
+              <label>
+                  {!! Form::checkbox('is_enable_service_staff_pin', 1, false, ['class' => 'input-icheck status', 'id' => 'is_enable_service_staff_pin']); !!} {{ __('lang_v1.enable_service_staff_pin') }}
+              </label>
+              @show_tooltip(__('lang_v1.tooltip_is_enable_service_staff_pin'))
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2 hide service_staff_pin_div">
+          <div class="form-group">
+            {!! Form::label('service_staff_pin', __( 'lang_v1.staff_pin' ) . ':') !!}
+              {!! Form::password('service_staff_pin', ['class' => 'form-control', 'required' => true, 'placeholder' => __( 'lang_v1.staff_pin' ) ]); !!}
+          </div>
+        </div>
+      @endcomponent
+    </div>
   </div>
   <div class="col-md-12">
     @component('components.widget', ['title' => __('lang_v1.roles_and_permissions')])

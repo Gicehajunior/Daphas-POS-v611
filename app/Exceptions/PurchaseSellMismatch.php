@@ -26,7 +26,8 @@ class PurchaseSellMismatch extends Exception
      */
     public function render($request)
     {
-        $output = ['success' => 0,
+        $output = [
+            'success' => 0,
             'msg' => $this->getMessage(),
         ];
 

@@ -1325,6 +1325,7 @@ class ReportController extends Controller
 
         $business_id = $request->session()->get('user.business_id');
 
+
         //Return the details in ajax call
         if ($request->ajax()) {
             $start_date = $request->get('start_date');
@@ -1340,27 +1341,95 @@ class ReportController extends Controller
 
             $commission_percentage = User::find($commission_agent)->cmmsn_percent;
 
-            if ($commsn_calculation_type == 'payment_received') {
-                $payment_details = $this->transactionUtil->getTotalPaymentWithCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+            $transactions = Transaction::where('transactions.business_id', $business_id);
 
-                //Get Commision
-                $total_commission = $commission_percentage * $payment_details['total_payment_with_commission'] / 100;
-
-                return ['total_payment_with_commission' => $payment_details['total_payment_with_commission'] ?? 0,
-                    'total_commission' => $total_commission,
-                    'commission_percentage' => $commission_percentage,
-                ];
+            if (!empty($start_date) && !empty($end_date)) {
+                $transactions->whereBetween(DB::raw('date(transactions.transaction_date)'), [$start_date, $end_date]);
             }
 
-            $sell_details = $this->transactionUtil->getTotalSellCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+            //Filter by the location
+            if (!empty($location_id)) {
+                $transactions->where('transactions.location_id', $location_id);
+            }
 
-            //Get Commision
-            $total_commission = $commission_percentage * $sell_details['total_sales_with_commission'] / 100;
+            if (!empty($commission_agent)) {
+                $transactions->where('transactions.commission_agent', $commission_agent);
+            }
 
-            return ['total_sales_with_commission' => $sell_details['total_sales_with_commission'],
-                'total_commission' => $total_commission,
-                'commission_percentage' => $commission_percentage,
-            ];
+            $transactions = $transactions->get();
+
+            /**
+             * commission calculation is in two ways
+             * 
+             * with whole amount value set in the system, to be denoted as 1
+             * with percentage value set in the system, to be denoted as 2
+             * 
+             * @author Re-authored by: gicehajunior-gicehajunior76@gmail.com
+             */
+            $total_commission_in_amount_format = 0;
+            foreach ($transactions as $transactionKey => $transactionValue) {
+                $total_commission_in_amount_format += $transactionValue['commission_amount'];
+            }
+
+            $commission_calculation = 1;
+
+            if ($commission_calculation == 2) {
+                if ($commsn_calculation_type == 'payment_received') {
+                    $payment_details = $this->transactionUtil->getTotalPaymentWithCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                    //Get Commision
+                    $total_commission = $commission_percentage * $payment_details['total_payment_with_commission'] / 100;
+
+                    return [
+                        'total_payment_with_commission' => $payment_details['total_payment_with_commission'] ?? 0,
+                        'total_commission' => $total_commission,
+                        'commission_percentage' => $commission_percentage,
+                        'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                        'commission_calculation' => $commission_calculation
+                    ];
+                }
+
+                $sell_details = $this->transactionUtil->getTotalSellCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                //Get Commision
+                $total_commission = $commission_percentage * $sell_details['total_sales_with_commission'] / 100;
+
+                return [
+                    'total_sales_with_commission' => $sell_details['total_sales_with_commission'],
+                    'total_commission' => $total_commission,
+                    'commission_percentage' => $commission_percentage,
+                    'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                    'commission_calculation' => $commission_calculation
+                ];
+            } else if ($commission_calculation == 1) {
+                if ($commsn_calculation_type == 'payment_received') {
+                    $payment_details = $this->transactionUtil->getTotalPaymentWithCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                    //Get Commision
+                    $total_commission = $payment_details['total_payment_with_commission'] - $total_commission_in_amount_format;
+
+                    return [
+                        'total_payment_with_commission' => $payment_details['total_payment_with_commission'] ?? 0,
+                        'total_commission' => $total_commission,
+                        'commission_percentage' => $commission_percentage,
+                        'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                        'commission_calculation' => $commission_calculation
+                    ];
+                }
+
+                $sell_details = $this->transactionUtil->getTotalSellCommission($business_id, $start_date, $end_date, $location_id, $commission_agent);
+
+                //Get Commision
+                $total_commission = $sell_details['total_sales_with_commission'] - $total_commission_in_amount_format;
+
+                return [
+                    'total_sales_with_commission' => $sell_details['total_sales_with_commission'],
+                    'total_commission' => $total_commission,
+                    'commission_percentage' => $commission_percentage,
+                    'total_commission_in_amount_format' => $total_commission_in_amount_format,
+                    'commission_calculation' => $commission_calculation
+                ];
+            }
         }
     }
 
@@ -1959,13 +2028,13 @@ class ReportController extends Controller
                     return '<span class="unit_sale_price" data-orig-value="'.$row->unit_sale_price.'">'.
                     $this->transactionUtil->num_f($row->unit_sale_price, true).'</span>';
                 })
+                
                 ->editColumn('sell_qty', function ($row) {
                     //ignore child sell line of combo product
                     $class = is_null($row->parent_sell_line_id) ? 'sell_qty' : '';
 
-                    return '<span class="'.$class.'"  data-orig-value="'.$row->sell_qty.'" 
-                    data-unit="'.$row->unit.'" >'.
-                    $this->transactionUtil->num_f($row->sell_qty, false, null, true).'</span> '.$row->unit;
+                    // return '<span class="'.$class.'"  data-orig-value="'.$row->sell_qty.'" data-unit="'.$row->unit.'" >'. $this->transactionUtil->num_f($row->sell_qty, false, null, true).'</span> '.$row->unit;
+                    return '<span class="quantity sell_qty" data-quantity="' . $row->sell_qty . '" data-currency_symbol="false" data-orig-value="' . $row->sell_qty . '">' . (float) $row->sell_qty . '</span>';
                 })
                  ->editColumn('subtotal', function ($row) {
                      //ignore child sell line of combo product
@@ -2149,9 +2218,10 @@ class ReportController extends Controller
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('unit_sale_price', function ($row) {
                     return '<span class="display_currency" data-currency_symbol = true>'.$row->unit_sale_price.'</span>';
-                })
+                }) 
                 ->editColumn('purchase_quantity', function ($row) {
-                    return '<span data-is_quantity="true" class="display_currency purchase_quantity" data-currency_symbol=false data-orig-value="'.(float) $row->purchase_quantity.'" data-unit="'.$row->unit.'" >'.(float) $row->purchase_quantity.'</span> '.$row->unit;
+                    // return '<span data-is_quantity="true" class="display_currency purchase_quantity" data-currency_symbol=false data-orig-value="'.(float) $row->purchase_quantity.'" data-unit="'.$row->unit.'" >'.(float) $row->purchase_quantity.'</span> '.$row->unit;
+                    return '<span class="quantity purchase_qty" data-quantity="' . (float) $row->purchase_quantity . '" data-currency_symbol="false" data-orig-value="' . (float) $row->purchase_quantity . '">' . (float) $row->purchase_quantity . '</span>';
                 })
                 ->editColumn('ref_no', '
                     @if($purchase_type == "opening_stock")
@@ -2782,7 +2852,8 @@ class ReportController extends Controller
                 })
                 ->editColumn('transaction_date', '{{@format_date($formated_date)}}')
                 ->editColumn('total_qty_sold', function ($row) {
-                    return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="'.$row->unit.'" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    // return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="'.$row->unit.'" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    return '<span class="quantity total_qty_sold" data-quantity="' . $row->total_qty_sold . '" data-currency_symbol="false" data-orig-value="' . (float) $row->total_qty_sold . '">' . (float) $row->total_qty_sold . '</span>';
                 })
                 ->editColumn('current_stock', function ($row) {
                     if ($row->enable_stock) {
@@ -2898,7 +2969,8 @@ class ReportController extends Controller
                 ->editColumn('category_name', '{{$category_name ?? __("lang_v1.uncategorized")}}')
                 ->editColumn('brand_name', '{{$brand_name ?? __("lang_v1.no_brand")}}')
                 ->editColumn('total_qty_sold', function ($row) {
-                    return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    // return '<span data-is_quantity="true" class="display_currency sell_qty" data-currency_symbol=false data-orig-value="'.(float) $row->total_qty_sold.'" data-unit="" >'.(float) $row->total_qty_sold.'</span> '.$row->unit;
+                    return '<span class="total_qty_sold quantity" data-quantity="' . (float) $row->total_qty_sold . '" data-currency_symbol="false" data-orig-value="' . (float) $row->total_qty_sold . '">' . (float) $row->total_qty_sold . '</span>';
                 })
                 ->editColumn('current_stock', function ($row) {
                     return '<span data-is_quantity="true" class="display_currency current_stock" data-currency_symbol=false data-orig-value="'.(float) $row->current_stock.'" data-unit="">'.(float) $row->current_stock.'</span> ';
