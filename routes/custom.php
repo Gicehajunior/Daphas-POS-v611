@@ -7,7 +7,6 @@ use App\Http\Controllers\Custom\StripeCustomController;
 use App\Http\Controllers\Custom\SellPosCustomController;
 use App\Http\Controllers\SellPosController;
 
-
 Route::get('mpesa-settings/_register_enpoints/{id}', [MpesaCustomController::class, '_register_enpoints']);
 Route::post('mpesa-settings/register_enpoints/{id}', [MpesaCustomController::class, 'register_enpoints']);
 

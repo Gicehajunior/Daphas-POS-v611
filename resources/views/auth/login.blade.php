@@ -27,83 +27,81 @@
             }
         }
     @endphp
+     
     <div class="row">
         <div class="col-md-4">
         @if (config('app.env') == 'demo')
-        
-                @component('components.widget', [
-                    'class' => 'box-primary',
-                    'header' =>
-                        '<h4 class="text-center">Demo Shops <small><i> <br/>Demos are for example purpose only, this application <u>can be used in many other similar businesses.</u></i> <br/><b>Click button to login that business</b></small></h4>',
+            @component('components.widget', [
+                'class' => 'box-primary',
+                'header' =>
+                    '<h4 class="text-center">Demo Shops <small><i> <br/>Demos are for example purpose only, this application <u>can be used in many other similar businesses.</u></i> <br/><b>Click button to login that business</b></small></h4>',
                 ])
-                    <a href="?demo_type=all_in_one" class="btn btn-app bg-olive demo-login" data-toggle="tooltip"
-                        title="Showcases all feature available in the application."
-                        data-admin="{{ $demo_types['all_in_one'] }}"> <i class="fas fa-star"></i> All In One</a>
+                <a href="?demo_type=all_in_one" class="btn btn-app bg-olive demo-login" data-toggle="tooltip"
+                    title="Showcases all feature available in the application."
+                    data-admin="{{ $demo_types['all_in_one'] }}"> <i class="fas fa-star"></i> All In One</a>
 
-                    <a href="?demo_type=pharmacy" class="btn bg-maroon btn-app demo-login" data-toggle="tooltip"
-                        title="Shops with products having expiry dates." data-admin="{{ $demo_types['pharmacy'] }}"><i
-                            class="fas fa-medkit"></i>Pharmacy</a>
+                <a href="?demo_type=pharmacy" class="btn bg-maroon btn-app demo-login" data-toggle="tooltip"
+                    title="Shops with products having expiry dates." data-admin="{{ $demo_types['pharmacy'] }}"><i
+                        class="fas fa-medkit"></i>Pharmacy</a>
 
-                    <a href="?demo_type=services" class="btn bg-orange btn-app demo-login" data-toggle="tooltip"
-                        title="For all service providers like Web Development, Restaurants, Repairing, Plumber, Salons, Beauty Parlors etc."
-                        data-admin="{{ $demo_types['services'] }}"><i class="fas fa-wrench"></i>Multi-Service Center</a>
+                <a href="?demo_type=services" class="btn bg-orange btn-app demo-login" data-toggle="tooltip"
+                    title="For all service providers like Web Development, Restaurants, Repairing, Plumber, Salons, Beauty Parlors etc."
+                    data-admin="{{ $demo_types['services'] }}"><i class="fas fa-wrench"></i>Multi-Service Center</a>
 
-                    <a href="?demo_type=electronics" class="btn bg-purple btn-app demo-login" data-toggle="tooltip"
-                        title="Products having IMEI or Serial number code." data-admin="{{ $demo_types['electronics'] }}"><i
-                            class="fas fa-laptop"></i>Electronics & Mobile Shop</a>
+                <a href="?demo_type=electronics" class="btn bg-purple btn-app demo-login" data-toggle="tooltip"
+                    title="Products having IMEI or Serial number code." data-admin="{{ $demo_types['electronics'] }}"><i
+                        class="fas fa-laptop"></i>Electronics & Mobile Shop</a>
 
-                    <a href="?demo_type=super_market" class="btn bg-navy btn-app demo-login" data-toggle="tooltip"
-                        title="Super market & Similar kind of shops." data-admin="{{ $demo_types['super_market'] }}"><i
-                            class="fas fa-shopping-cart"></i> Super Market</a>
+                <a href="?demo_type=super_market" class="btn bg-navy btn-app demo-login" data-toggle="tooltip"
+                    title="Super market & Similar kind of shops." data-admin="{{ $demo_types['super_market'] }}"><i
+                        class="fas fa-shopping-cart"></i> Super Market</a>
 
-                    <a href="?demo_type=restaurant" class="btn bg-red btn-app demo-login" data-toggle="tooltip"
-                        title="Restaurants, Salons and other similar kind of shops."
-                        data-admin="{{ $demo_types['restaurant'] }}"><i class="fas fa-utensils"></i> Restaurant</a>
-                    <hr>
+                <a href="?demo_type=restaurant" class="btn bg-red btn-app demo-login" data-toggle="tooltip"
+                    title="Restaurants, Salons and other similar kind of shops."
+                    data-admin="{{ $demo_types['restaurant'] }}"><i class="fas fa-utensils"></i> Restaurant</a>
+                <hr>
 
-                    <i class="icon fas fa-plug"></i> Premium optional modules:<br><br>
+                <i class="icon fas fa-plug"></i> Premium optional modules:<br><br>
 
-                    <a href="?demo_type=superadmin" class="btn bg-red-active btn-app demo-login" data-toggle="tooltip"
-                        title="SaaS & Superadmin extension Demo" data-admin="{{ $demo_types['superadmin'] }}"><i
-                            class="fas fa-university"></i> SaaS / Superadmin</a>
+                <a href="?demo_type=superadmin" class="btn bg-red-active btn-app demo-login" data-toggle="tooltip"
+                    title="SaaS & Superadmin extension Demo" data-admin="{{ $demo_types['superadmin'] }}"><i
+                        class="fas fa-university"></i> SaaS / Superadmin</a>
 
-                    <a href="?demo_type=woocommerce" class="btn bg-woocommerce btn-app demo-login" data-toggle="tooltip"
-                        title="WooCommerce demo user - Open web shop in minutes!!" style="color:white !important"
-                        data-admin="{{ $demo_types['woocommerce'] }}"> <i class="fab fa-wordpress"></i> WooCommerce</a>
+                <a href="?demo_type=woocommerce" class="btn bg-woocommerce btn-app demo-login" data-toggle="tooltip"
+                    title="WooCommerce demo user - Open web shop in minutes!!" style="color:white !important"
+                    data-admin="{{ $demo_types['woocommerce'] }}"> <i class="fab fa-wordpress"></i> WooCommerce</a>
 
-                    <a href="?demo_type=essentials" class="btn bg-navy btn-app demo-login" data-toggle="tooltip"
-                        title="Essentials & HRM (human resource management) Module Demo" style="color:white !important"
-                        data-admin="{{ $demo_types['essentials'] }}">
-                        <i class="fas fa-check-circle"></i>
-                        Essentials & HRM</a>
+                <a href="?demo_type=essentials" class="btn bg-navy btn-app demo-login" data-toggle="tooltip"
+                    title="Essentials & HRM (human resource management) Module Demo" style="color:white !important"
+                    data-admin="{{ $demo_types['essentials'] }}">
+                    <i class="fas fa-check-circle"></i>
+                    Essentials & HRM</a>
 
-                    <a href="?demo_type=manufacturing" class="btn bg-orange btn-app demo-login" data-toggle="tooltip"
-                        title="Manufacturing module demo" style="color:white !important"
-                        data-admin="{{ $demo_types['manufacturing'] }}">
-                        <i class="fas fa-industry"></i>
-                        Manufacturing Module</a>
+                <a href="?demo_type=manufacturing" class="btn bg-orange btn-app demo-login" data-toggle="tooltip"
+                    title="Manufacturing module demo" style="color:white !important"
+                    data-admin="{{ $demo_types['manufacturing'] }}">
+                    <i class="fas fa-industry"></i>
+                    Manufacturing Module</a>
 
-                    <a href="?demo_type=superadmin" class="btn bg-maroon btn-app demo-login" data-toggle="tooltip"
-                        title="Project module demo" style="color:white !important"
-                        data-admin="{{ $demo_types['superadmin'] }}">
-                        <i class="fas fa-project-diagram"></i>
-                        Project Module</a>
+                <a href="?demo_type=superadmin" class="btn bg-maroon btn-app demo-login" data-toggle="tooltip"
+                    title="Project module demo" style="color:white !important"
+                    data-admin="{{ $demo_types['superadmin'] }}">
+                    <i class="fas fa-project-diagram"></i>
+                    Project Module</a>
 
-                    <a href="?demo_type=services" class="btn btn-app demo-login" data-toggle="tooltip"
-                        title="Advance repair module demo" style="color:white !important; background-color: #bc8f8f"
-                        data-admin="{{ $demo_types['services'] }}">
-                        <i class="fas fa-wrench"></i>
-                        Advance Repair Module</a>
+                <a href="?demo_type=services" class="btn btn-app demo-login" data-toggle="tooltip"
+                    title="Advance repair module demo" style="color:white !important; background-color: #bc8f8f"
+                    data-admin="{{ $demo_types['services'] }}">
+                    <i class="fas fa-wrench"></i>
+                    Advance Repair Module</a>
 
-                    <a href="{{ url('docs') }}" target="_blank" class="btn btn-app" data-toggle="tooltip"
-                        title="Advance repair module demo" style="color:white !important; background-color: #2dce89">
-                        <i class="fas fa-network-wired"></i>
-                        Connector Module / API Documentation</a>
-                @endcomponent
+                <a href="{{ url('docs') }}" target="_blank" class="btn btn-app" data-toggle="tooltip"
+                    title="Advance repair module demo" style="color:white !important; background-color: #2dce89">
+                    <i class="fas fa-network-wired"></i>
+                    Connector Module / API Documentation</a>
+            @endcomponent
             
-            
-        
-    @endif
+        @endif
         </div>
         <div class="col-md-4">
             <div
@@ -211,6 +209,21 @@
                                         class="tw-text-sm tw-font-medium tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-inline-block tw-text-transparent tw-bg-clip-text hover:tw-text-[#467BF5] hover:tw-underline">{{ __('business.register_now') }}</span></a>
                             @endif
                         @endif
+                    </div>
+
+                    <hr class="tw-my-4"> 
+
+                    <!-- Footer Links -->
+                    <div class="tw-flex tw-flex-col sm:tw-flex-row tw-items-center tw-justify-between tw-gap-4">
+                        <div class="tw-flex tw-items-center tw-gap-3 tw-flex-wrap"> 
+                            <a href="/" class="btn btn-outline-secondary tw-text-gray-400">
+                                <i class="fas fa-home me-1"></i> Back to Home
+                            </a>
+                        </div>
+                        
+                        <span class="tw-text-sm tw-text-gray-400">
+                            © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+                        </span>
                     </div>
                 </div>
             </div>

@@ -58,7 +58,8 @@ use App\Http\Controllers\TypesOfServiceController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
-use App\Http\Controllers\WarrantyController;
+use App\Http\Controllers\WarrantyController; 
+use App\Http\Controllers\Web\LandingPageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -75,12 +76,11 @@ use Illuminate\Support\Facades\Route;
 include_once 'install_r.php';
 
 Route::middleware(['setData'])->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
-
+    // Global Routes
+    include('global.php');
     Auth::routes();
 
+    Route::get('/', [LandingPageController::class, 'index']);
     Route::get('/business/register', [BusinessController::class, 'getRegister'])->name('business.getRegister');
     Route::post('/business/register', [BusinessController::class, 'postRegister'])->name('business.postRegister');
     Route::post('/business/register/check-username', [BusinessController::class, 'postCheckUsername'])->name('business.postCheckUsername');
