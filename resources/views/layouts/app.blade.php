@@ -107,6 +107,8 @@
             <!-- This will be printed -->
             <section class="invoice print_section" id="receipt_section">
             </section>
+        
+            <div class="modal fade view_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
         </main>
         
         <div class="modal fade edit-customer-modal" id="editCustomerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -135,8 +137,6 @@
         
         {{-- Module JS --}}
         @include('layouts.module-assets')
-        <div class="modal fade view_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
-
         @if (!empty($__additional_views) && is_array($__additional_views))
             @foreach ($__additional_views as $additional_view)
                 @includeIf($additional_view)
