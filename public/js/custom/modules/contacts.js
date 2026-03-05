@@ -1,11 +1,12 @@
-class Ledger extends Master {
+class Contact extends Master {
     constructor() {
         super();
-        // ANY CONSTRUCTOR LOGIC
+        this.categorySelected = 'individual';
     }
 
-    initializeLedger() {
-        this.setupLedgerUi();
+    initializeContacts() {
+        this.setupLedgerUi(); 
+        this.setupContactsModalUX(); 
     }
 
     /**
@@ -25,5 +26,32 @@ class Ledger extends Master {
         } 
 
         // ...
+    }
+
+    /**
+     * Handles Contact Category UX inside the Contacts Modal.
+     *
+     * Behaviour:
+     * - Reads selected value from #contact_category
+     * - Hides all contact sections
+     * - Shows only the matching section
+     */
+    setupContactsModalUX() {
+        const contact_category = $('#contact_category');
+        if (!contact_category.length) return;
+
+        function updateSections(value) {
+            // Hide all sections
+            $('.contact-category-section').css('display', 'none');
+
+            // Show selected section
+            $(`.${value}`).css('display', 'block');
+        }
+
+        // When selection changes
+        contact_category.on('change select2:select', function () {
+            const value = $(this).val(); 
+            updateSections(value);
+        });
     }
 } 

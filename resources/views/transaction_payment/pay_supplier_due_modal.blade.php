@@ -251,5 +251,5 @@
 
 {{-- contacts --}}
 <script>
-  (new Ledger()).initializeLedger();
+  (new Contact()).initializeContacts();
 </script>
