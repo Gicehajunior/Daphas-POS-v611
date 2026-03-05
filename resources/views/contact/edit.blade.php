@@ -289,7 +289,8 @@ if(isset($update_action)) {
                 </div>
             </div>
             </div>
-            
+
+            <div class="col-md-12 customer_fields">
             <div class="form-group">
                 {!! Form::label('credit_limit', __('lang_v1.credit_limit') . ':') !!}
                 <div class="input-group">
@@ -301,10 +302,11 @@ if(isset($update_action)) {
                 <p class="help-block">@lang('lang_v1.credit_limit_help')</p>
             </div>
             </div>
+        </div>
             
         <div class="col-md-12">
-        <hr/>
-      </div>
+            <hr/>
+        </div>
       
       <div class="col-md-6">
         <div class="form-group">
