@@ -365,7 +365,7 @@ $(document).ready(function() {
                 string += ' (' + item.sub_sku + ')' + '<br> Price: ' + __currency_trans_from_en(selling_price, false, false, __currency_precision, true);
                 if (item.enable_stock == 1) {
                     var qty_available = __currency_trans_from_en(item.qty_available, false, false, __currency_precision, true);
-                    string += ' - ' + qty_available + item.unit;
+                    string += ' - ' + qty_available + ' - ' + item.unit;
                 }
                 string += '</div>';
 
