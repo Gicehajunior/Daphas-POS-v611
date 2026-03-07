@@ -1,12 +1,12 @@
 class Contact extends Master {
     constructor() {
-        super();
-        this.categorySelected = 'individual';
+        super(); 
     }
 
     initializeContacts() {
         this.setupLedgerUi(); 
         this.setupContactsModalUX(); 
+        this.editCustomer();
     }
 
     /**
@@ -33,25 +33,35 @@ class Contact extends Master {
      *
      * Behaviour:
      * - Reads selected value from #contact_category
-     * - Hides all contact sections
+     * - Hides all contact sections inside the same modal
      * - Shows only the matching section
      */
     setupContactsModalUX() {
         const contact_category = $('#contact_category');
         if (!contact_category.length) return;
-
+    
+        const modal = contact_category.closest('.modal');
+    
         function updateSections(value) {
+    
             // Hide all sections
-            $('.contact-category-section').css('display', 'none');
-
+            modal.find('.contact-category-section').css('display', 'none');
+    
+            // Stop if value is empty
+            if (!value) return;
+    
             // Show selected section
-            $(`.${value}`).css('display', 'block');
+            modal.find('.contact-category-section.' + value).css('display', 'block');
         }
-
-        // When selection changes
+    
         contact_category.on('change select2:select', function () {
-            const value = $(this).val(); 
-            updateSections(value);
+            updateSections($(this).val());
         });
+    
+        // Initialize for edit forms
+        const initialValue = contact_category.val();
+        if (initialValue) {
+            updateSections(initialValue);
+        }
     }
 } 

@@ -117,9 +117,6 @@
 {{-- master class --}}
 <script src="{{ asset('js/custom/modules/master.js?v=' . $asset_v) }}"></script>
 
-{{-- EXTRA Local Scripts Dependencies --}}  
-<script src="{{ asset('js/custom/modules/contacts.js?v=' . $asset_v) }}"></script>
-
 <script src="{{ asset('js/custom/functions/pos.js?v=' . $asset_v) }}"></script> 
 	<script src="{{ asset('js/custom/modules/esd.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>

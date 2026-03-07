@@ -615,7 +615,8 @@
   
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
-
 <script>
+if (typeof Contact !== "undefined" && typeof Contact.prototype.initializeContacts === "function") {
   (new Contact()).initializeContacts();
+}
 </script>

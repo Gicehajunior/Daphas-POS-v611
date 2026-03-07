@@ -819,12 +819,19 @@ class SellPosController extends Controller
                 unset($input['payment']['change_return']);
             }
 
+            DB::beginTransaction();
+
             //Check Customer credit limit
-            $is_credit_limit_exeeded = $this->transactionUtil->isCustomerCreditLimitExeeded($input);
+            $is_credit_sale = isset($input['is_credit_sale']) && intval($input['is_credit_sale']) == 1 ? true : false;
+
+            $is_credit_limit_exeeded = $is_credit_sale 
+                ?   $this->transactionUtil->isCustomerCreditLimitExeeded($input) 
+                :   false;
 
             if ($is_credit_limit_exeeded !== false) {
                 $credit_limit_amount = $this->transactionUtil->num_f($is_credit_limit_exeeded, true);
-                $output = ['success' => 0,
+                $output = [
+                    'success' => 0,
                     'msg' => __('lang_v1.cutomer_credit_limit_exeeded', ['credit_limit' => $credit_limit_amount]),
                 ];
                 if (! $is_direct_sale) {
@@ -850,8 +857,6 @@ class SellPosController extends Controller
                     'discount_amount' => $input['discount_amount'],
                 ];
                 $invoice_total = $this->productUtil->calculateInvoiceTotal($input['products'], $input['tax_rate_id'], $discount);
-
-                DB::beginTransaction();
 
                 if (empty($request->input('transaction_date'))) {
                     $input['transaction_date'] = \Carbon::now();

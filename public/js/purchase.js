@@ -196,7 +196,7 @@ $(document).ready(function() {
         $('form#quick_add_contact')
             .find('button[type="submit"]')
             .removeAttr('disabled');
-        $('form#quick_add_contact')[0].reset();
+        $('form#quick_add_contact')[0]?.reset();
     });
 
     //Add products

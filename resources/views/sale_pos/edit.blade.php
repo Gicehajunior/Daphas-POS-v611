@@ -100,7 +100,8 @@
 @stop
 
 @section('javascript')
-	
+    {{-- EXTRA Local Scripts Dependencies --}}  
+    <script src="{{ asset('js/custom/modules/contacts.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>   
 	<script src="{{ asset('js/printer.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>

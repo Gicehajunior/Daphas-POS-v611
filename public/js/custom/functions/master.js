@@ -279,33 +279,57 @@ function splitDateRange(dateRange) {
 
 function toast(status, time, message) {
     try {
-        if (message != undefined || message != null) {
-            toastr.options.newestOnTop = true;
-            toastr.options.timeOut = time;
-            toastr.options.extendedTimeOut = 0;
-            toastr.options.progressBar = true;
-            toastr.options.rtl = false;
-            toastr.options.closeButton = true;
-            toastr.options.closeMethod = 'fadeOut';
-            toastr.options.closeDuration = 300;
-            toastr.options.closeEasing = 'swing';
-            toastr.options.preventDuplicates = true;
 
-            if (status == 'success') {
-                toastr.success(message);
-                playSuccessAudio();
-            } else if (status == 'warning') {
-                toastr.warning(message);
-                playWarningAudio();
-            } else if (status == 'info') {
-                toastr.info(message);
-            } else if (status == 'error') {
-                toastr.error(message);
-                playErrorAudio();
+        if (!message) return;
+
+        // Prevent duplicate message in current container
+        let duplicate = false;
+
+        $('#toast-container .toast-message').each(function () {
+            if ($(this).text().trim() === message.trim()) {
+                duplicate = true;
+                return false;
             }
+        });
+
+        if (duplicate) return;
+
+        // remove existing toast to avoid stacking
+        toastr.remove();
+
+        toastr.options = {
+            newestOnTop: true,
+            timeOut: time || 5000,
+            extendedTimeOut: 0,
+            progressBar: true,
+            rtl: false,
+            closeButton: true,
+            closeMethod: 'fadeOut',
+            closeDuration: 300,
+            closeEasing: 'swing',
+            tapToDismiss: true,
+            preventDuplicates: true,
+            positionClass: "toast-top-right"
+        };
+
+        if (status === 'success') {
+            toastr.success(message);
+            if (typeof playSuccessAudio === 'function') playSuccessAudio();
         }
+        else if (status === 'warning') {
+            toastr.warning(message);
+            if (typeof playWarningAudio === 'function') playWarningAudio();
+        }
+        else if (status === 'info') {
+            toastr.info(message);
+        }
+        else if (status === 'error') {
+            toastr.error(message);
+            if (typeof playErrorAudio === 'function') playErrorAudio();
+        }
+
     } catch (error) {
-        console.log('Toast Error: ' + error);
+        console.log('Toast Error:', error);
     }
 }
 
