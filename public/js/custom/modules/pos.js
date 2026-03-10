@@ -93,7 +93,7 @@ class POS extends Master {
         const use_esd = transaction_result.pos_settings.enable_esd_usage?.length &&
                         transaction_result.customer_details.tax_exempted?.length !== 1;
         
-        if (use_esd) {
+        if (use_esd && !txn?.id) {
             esd_device_instance.post_transaction(transaction_result);
         } else {
             printInvoice();

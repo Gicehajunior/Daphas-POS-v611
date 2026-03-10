@@ -38,6 +38,7 @@ class ESD_DEVICE extends Master {
         this.CUIN = undefined;
         this.QRCode = undefined;
         this.dtStmp = undefined;
+        this.finalized_transactions = new Set();
         this.tims_post_transaction_error = undefined;
     }
 
@@ -67,7 +68,8 @@ class ESD_DEVICE extends Master {
     async post_transaction(transaction_result) {
         if (!transaction_result?.transaction) return;
 
-        this.txn = transaction_result.transaction;
+        this.txn = transaction_result.transaction; 
+        
         this.transaction_id = this.txn.id;
         this.pos_settings = transaction_result.pos_settings;
 
@@ -146,13 +148,13 @@ class ESD_DEVICE extends Master {
                 taxtype: rate
             });
         }
-
+        
         if (totalCents <= 0) {
             this.txn.final_transaction = 1;
             this.finalizeTransaction(this.txn);
             return;
         }
-
+        
         // ---- Final computed totals (from lines only) ----
         const total = totalCents / 100;
         const VAT_A = vatACents / 100;
@@ -214,13 +216,12 @@ class ESD_DEVICE extends Master {
             const resp = await response.json();
             console.log('ESD RESPONSE:', resp);
 
-            if (resp?.obj) {
+            if (resp?.obj?.CUIN?.length) {
                 this.handle_tims_server_response(resp);
             } else {
                 enable_pos_form_actions();
                 toast('error', 4000, 'Invalid response from ESD bridge');
             }
-
         } catch (err) {
             console.error('ESD ERROR:', err);
             enable_pos_form_actions();
@@ -249,6 +250,12 @@ class ESD_DEVICE extends Master {
 
         const obj = resp?.obj;
         if (!obj || !this.txn) {
+            enable_pos_form_actions();
+            toast('error', 8000, 'ESD response invalid or transaction missing.');
+            return;
+        }
+
+        if (!obj?.CUIN?.length) {
             enable_pos_form_actions();
             toast('error', 8000, 'ESD response invalid or transaction missing.');
             return;
@@ -289,6 +296,14 @@ class ESD_DEVICE extends Master {
      */ 
     finalizeTransaction(txn) { 
         this.txn = txn;
+
+        if (this.finalized_transactions.has(txn.id)) {
+            console.warn('Transaction already finalized:', txn.id);
+            return;
+        }
+
+        this.finalized_transactions.add(txn.id); 
+
         console.log('FINAL TXN TO POS:', this.txn);
         
         fetch('/pos', {

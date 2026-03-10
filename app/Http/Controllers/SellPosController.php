@@ -777,9 +777,7 @@ class SellPosController extends Controller
 
         $final_transaction_status = $request->input('final_transaction');
         if (empty($final_transaction_status) && isset($pos_settings['enable_esd_usage']) && $pos_settings['enable_esd_usage'] == 1) { 
-            if (empty($customer_details['tax_exempted']) || 
-                $customer_details['tax_exempted'] == 0)
-            {
+            if (empty($customer_details['tax_exempted']) ||  $customer_details['tax_exempted'] == 0) {
                 if (empty($request->input('CUIN'))) {
                     return $this->store_bridger($request);
                 }
@@ -818,12 +816,9 @@ class SellPosController extends Controller
                 $change_return = $input['payment']['change_return'];
                 unset($input['payment']['change_return']);
             }
-
-            DB::beginTransaction();
-
+            
             //Check Customer credit limit
-            $is_credit_sale = isset($input['is_credit_sale']) && intval($input['is_credit_sale']) == 1 ? true : false;
-
+            $is_credit_sale = (isset($input['is_credit_sale']) && intval($input['is_credit_sale']) == 1) ? true : false;
             $is_credit_limit_exeeded = $is_credit_sale 
                 ?   $this->transactionUtil->isCustomerCreditLimitExeeded($input) 
                 :   false;
@@ -834,6 +829,7 @@ class SellPosController extends Controller
                     'success' => 0,
                     'msg' => __('lang_v1.cutomer_credit_limit_exeeded', ['credit_limit' => $credit_limit_amount]),
                 ];
+                
                 if (! $is_direct_sale) {
                     return $output;
                 } else {
@@ -857,6 +853,8 @@ class SellPosController extends Controller
                     'discount_amount' => $input['discount_amount'],
                 ];
                 $invoice_total = $this->productUtil->calculateInvoiceTotal($input['products'], $input['tax_rate_id'], $discount);
+
+                DB::beginTransaction();
 
                 if (empty($request->input('transaction_date'))) {
                     $input['transaction_date'] = \Carbon::now();
@@ -998,8 +996,6 @@ class SellPosController extends Controller
                 $change_return['is_return'] = 1;
 
                 $input['payment'][] = $change_return;
-
-                $is_credit_sale = isset($input['is_credit_sale']) && $input['is_credit_sale'] == 1 ? true : false;
 
                 if (! $transaction->is_suspend && ! empty($input['payment']) && ! $is_credit_sale) {
                     $this->transactionUtil->createOrUpdatePaymentLines($transaction, $input['payment']);
@@ -2055,7 +2051,9 @@ class SellPosController extends Controller
                 }
 
                 //Check Customer credit limit
-                $is_credit_limit_exeeded = $transaction_before->type == 'sell' ? $this->transactionUtil->isCustomerCreditLimitExeeded($input, $id) : false;
+                $is_credit_limit_exeeded = $transaction_before->type == 'sell'
+                    ? $this->transactionUtil->isCustomerCreditLimitExeeded($input, $id) 
+                    : false;
 
                 if ($is_credit_limit_exeeded !== false) {
                     $credit_limit_amount = $this->transactionUtil->num_f($is_credit_limit_exeeded, true);

@@ -688,7 +688,7 @@ $(document).ready(function() {
     });
 
     //Finalize without showing payment options
-    $('button.pos-express-finalize').click(function() {
+    $('button.pos-express-finalize').off('click').on('click', function() {
 
         //Check if product is present or not.
         if ($('table#pos_table tbody').find('.product_row').length <= 0) {
