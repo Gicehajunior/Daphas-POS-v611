@@ -3638,3 +3638,47 @@ function computeFooterTotalsUtil(api) {
         }
     });
 }  
+
+function dtBtns() {
+    return [
+        {
+            extend: 'copy',
+            text: '<i class="fa fa-copy"></i> Copy',
+            className: 'btn btn-sm btn-light mb-2'
+        },
+        {
+            extend: 'csv',
+            text: '<i class="fa fa-file-excel-o"></i> CSV',
+            className: 'btn btn-sm btn-success mb-2'
+        },
+        {
+            extend: 'excel',
+            text: '<i class="fa fa-file-excel-o"></i> Excel',
+            className: 'btn btn-sm btn-success mb-2'
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="fa fa-file-pdf-o"></i> PDF',
+            className: 'btn btn-sm btn-danger mb-2'
+        },
+        {
+            extend: 'print',
+            text: '<i class="fa fa-print"></i> Print',
+            className: 'btn btn-sm btn-info mb-2'
+        }
+    ];
+}
+
+function dtLanguage() {
+    return {
+        emptyTable: "@lang('lang_v1.no_stock_history_found')",
+        zeroRecords: "@lang('lang_v1.no_stock_history_found')",
+        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+        infoEmpty: "Showing 0 to 0 of 0 entries",
+        infoFiltered: "(filtered from _MAX_ total entries)",
+        paginate: {
+            previous: "Previous",
+            next: "Next"
+        }
+    };
+}

@@ -18,7 +18,11 @@ npm-debug.log
 /public/uploads/invoice_logos
 /public/uploads/UltimatePOS
 /public/uploads/temp
-/public/css/
+public/css/vendor.css
+public/css/rtl.css
+public/css/init.css
+public/css/app.css
+public/css/tailwind
 /public/fonts/
 /public/images/
 /public/modules/

@@ -56,6 +56,8 @@
 
 @section('javascript')
    <script type="text/javascript">
+        var stockHistoryTable; // Declare variable to hold DataTable instance
+
         $(document).ready( function(){
             load_stock_history($('#variation_id').val(), $('#location_id').val());
 
@@ -85,7 +87,7 @@
             });
         });
 
-       function load_stock_history(variation_id, location_id) {
+        function load_stock_history(variation_id, location_id) {
             $('#product_stock_history').fadeOut();
             $.ajax({
                 url: '/products/stock-history/' + variation_id + "?location_id=" + location_id,
@@ -97,17 +99,29 @@
 
                     __currency_convert_recursively($('#product_stock_history'));
 
-                    $('#stock_history_table').DataTable({
+                    // Destroy existing DataTable if it exists
+                    if (stockHistoryTable) {
+                        stockHistoryTable.destroy();
+                    }
+
+                    // Initialize new DataTable
+                    stockHistoryTable = $('#stock_history_table').DataTable({
                         searching: false,
-                        fixedHeader:false,
-                        ordering: false
+                        fixedHeader: false,
+                        ordering: false,
+                        paging: true,
+                        info: true,
+                        pageLength: 25,
+                        dom: 'Bfrtip', // Add B for buttons
+                        buttons: dtBtns(),
+                        language: dtLanguage
                     });
                 },
             });
-       }
+        }
 
-       $(document).on('change', '#variation_id, #location_id', function(){
+        $(document).on('change', '#variation_id, #location_id', function(){
             load_stock_history($('#variation_id').val(), $('#location_id').val());
-       });
+        });
    </script>
 @endsection

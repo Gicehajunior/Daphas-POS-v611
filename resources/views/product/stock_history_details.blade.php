@@ -1,6 +1,6 @@
 @php
 	$common_settings = session()->get('business.common_settings');
-@endphp
+@endphp 
 <div class="row">
 	<div class="col-md-12">
 		<h4>{{$stock_details['variation']}}</h4>
