@@ -106,15 +106,15 @@
 
                     // Initialize new DataTable
                     stockHistoryTable = $('#stock_history_table').DataTable({
-                        searching: false,
+                        searching: true,
                         fixedHeader: false,
                         ordering: false,
                         paging: true,
                         info: true,
                         pageLength: 25,
-                        dom: 'Bfrtip', // Add B for buttons
+                        dom: 'Blfrtip', // Add B for buttons
                         buttons: dtBtns(),
-                        language: dtLanguage
+                        language: dtLanguage()
                     });
                 },
             });
